@@ -47,7 +47,7 @@
 		};
 		var coords =geojson.features[0].geometry.coordinates;
 		var xspan =0.1, yspan = 0.1,zspan=5;
-		for (var i=0; i<100; i++){
+		for (var i=0; i<50; i++){
 			zspan+=Math.random()*5+(i>25?-10:10);
 			coords.push([Math.random()*xspan+5,Math.random()*yspan+50,zspan]);
 		}
