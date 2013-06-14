@@ -1,5 +1,6 @@
 L.Control.Elevation = L.Control.extend({
 	options: {
+		position: "topright",
 		width: 600,
 		height: 125,
 		margins: {
@@ -18,10 +19,15 @@ L.Control.Elevation = L.Control.extend({
 		yTicks: undefined
 	},
 
+	onRemove: function(map) {
+		this._container = null;
+		this._data = null;
+		this._dist = null;
+	},
+
 	onAdd: function(map) {
 		this._map = map;
 
-		map.on("layeradd", function(evt, a, b) {});
 		var opts = this.options;
 		var margin = opts.margins;
 		opts.width = opts.width - margin.left - margin.right;
@@ -86,9 +92,9 @@ L.Control.Elevation = L.Control.extend({
 		this._appendXaxis(this._xaxisgraphicnode);
 		this._appendYaxis(this._yaxisgraphicnode);
 
-		var focusG = g.append("g");
+		var focusG = this._focusG = g.append("g");
 		this._mousefocus = focusG.append('svg:line')
-			.attr('class', 'link dragline hidden')
+			.attr('class', 'link dragline')
 			.attr('x2', '0')
 			.attr('y2', '0')
 			.attr('x1', '0')
@@ -156,11 +162,13 @@ L.Control.Elevation = L.Control.extend({
 			this._map.removeLayer(this._marker);
 			this._marker = null;
 		}
+		this._focusG.style("visibility", "hidden");
 	},
 
 	_mousemoveHandler: function(d, i, ctx) {
 		var coords = d3.mouse(this._background.node());
 		var opts = this.options;
+		this._focusG.style("visibility", "visible");
 		this._mousefocus.attr('x1', coords[0])
 			.attr('y1', 0)
 			.attr('x2', coords[0])

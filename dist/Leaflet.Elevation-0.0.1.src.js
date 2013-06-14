@@ -1,5 +1,6 @@
 L.Control.Elevation = L.Control.extend({
 	options: {
+		position: "topright",
 		width: 600,
 		height: 125,
 		margins: {
@@ -8,18 +9,25 @@ L.Control.Elevation = L.Control.extend({
 			bottom: 30,
 			left: 50
 		},
+		interpolation: "linear",
 		hoverNumber: {
-			decimals: 2,
+			decimalsX: 3,
+			decimalsY: 0,
 			formatter: undefined
 		},
 		xTicks: undefined,
 		yTicks: undefined
 	},
 
+	onRemove: function(map) {
+		this._container = null;
+		this._data = null;
+		this._dist = null;
+	},
+
 	onAdd: function(map) {
 		this._map = map;
 
-		map.on("layeradd", function(evt, a, b) {});
 		var opts = this.options;
 		var margin = opts.margins;
 		opts.width = opts.width - margin.left - margin.right;
@@ -35,7 +43,7 @@ L.Control.Elevation = L.Control.extend({
 			.range([opts.height, 0]);
 
 		var area = this._area = d3.svg.area()
-			.interpolate("basis")
+			.interpolate(opts.interpolation)
 			.x(function(d) {
 			return x(d.dist);
 		})
@@ -84,9 +92,9 @@ L.Control.Elevation = L.Control.extend({
 		this._appendXaxis(this._xaxisgraphicnode);
 		this._appendYaxis(this._yaxisgraphicnode);
 
-		var focusG = g.append("g");
+		var focusG = this._focusG = g.append("g");
 		this._mousefocus = focusG.append('svg:line')
-			.attr('class', 'link dragline hidden')
+			.attr('class', 'link dragline')
 			.attr('x2', '0')
 			.attr('y2', '0')
 			.attr('x1', '0')
@@ -100,8 +108,13 @@ L.Control.Elevation = L.Control.extend({
 	},
 
 	_formatter: function(num, dec, sep) {
-		var res = L.Util.formatNum(num, dec) + "",
-			numbers = res.split(".");
+		var res;
+		if (dec === 0) {
+			res = Math.round(num) + "";
+		} else {
+			res = L.Util.formatNum(num, dec) + "";
+		}
+		var numbers = res.split(".");
 		if (numbers[1]) {
 			var d = dec - numbers[1].length;
 			for (; d > 0; d--) {
@@ -134,7 +147,7 @@ L.Control.Elevation = L.Control.extend({
 			.append("text")
 			.attr("x", this.options.width + 15)
 			.style("text-anchor", "end")
-			.text("m");
+			.text("km");
 	},
 
 	_updateAxis: function() {
@@ -149,11 +162,13 @@ L.Control.Elevation = L.Control.extend({
 			this._map.removeLayer(this._marker);
 			this._marker = null;
 		}
+		this._focusG.style("visibility", "hidden");
 	},
 
 	_mousemoveHandler: function(d, i, ctx) {
 		var coords = d3.mouse(this._background.node());
 		var opts = this.options;
+		this._focusG.style("visibility", "visible");
 		this._mousefocus.attr('x1', coords[0])
 			.attr('y1', 0)
 			.attr('x2', coords[0])
@@ -167,13 +182,13 @@ L.Control.Elevation = L.Control.extend({
 			alt = this._data[item].altitude,
 			dist = this._data[item].dist,
 			ll = this._data[item].latlng,
-			numX = opts.hoverNumber.formatter(alt, opts.hoverNumber.decimals),
-			numY = opts.hoverNumber.formatter(dist, opts.hoverNumber.decimals);
+			numY = opts.hoverNumber.formatter(alt, opts.hoverNumber.decimalsY),
+			numX = opts.hoverNumber.formatter(dist, opts.hoverNumber.decimalsX);
 		this._focuslabelX.attr("x", coords[0])
-			.text(numX + " m");
+			.text(numY + " m");
 		this._focuslabelY.attr("y", opts.height - 5)
 			.attr("x", coords[0])
-			.text(numY + " m");
+			.text(numX + " km");
 		if (!this._marker) {
 			this._marker = new L.Marker(ll).addTo(this._map);
 		} else {
@@ -188,6 +203,8 @@ L.Control.Elevation = L.Control.extend({
 			for (var i = 0; i < coords.length; i++) {
 				var s = new L.LatLng(coords[i][1], coords[i][0]);
 				var e = new L.LatLng(coords[i ? i - 1 : 0][1], coords[i ? i - 1 : 0][0]);
+				var newdist = s.distanceTo(e);
+				dist = dist + newdist / 1000;
 				data.push({
 					dist: dist,
 					altitude: coords[i][2],
@@ -195,7 +212,6 @@ L.Control.Elevation = L.Control.extend({
 					y: coords[i][1],
 					latlng: s
 				});
-				dist += s.distanceTo(e);
 			}
 			this._dist = dist;
 			this._data = data;
@@ -204,32 +220,42 @@ L.Control.Elevation = L.Control.extend({
 
 	addData: function(d) {
 		var geom = d && d.geometry && d.geometry;
-		switch (geom.type) {
-			case 'LineString':
-				this._addData(geom.coordinates);
-				break;
+		var i;
+		if (geom) {
+			switch (geom.type) {
+				case 'LineString':
+					this._addData(geom.coordinates);
+					break;
 
-			case 'MultiLineString':
-				for (var i = 0; i < geom.coordinates.length; i++) {
-					this._addData(geom.coordinates[i]);
-				}
-				break;
+				case 'MultiLineString':
+					for (i = 0; i < geom.coordinates.length; i++) {
+						this._addData(geom.coordinates[i]);
+					}
+					break;
 
-			default:
-				throw new Error('Invalid GeoJSON object.');
+				default:
+					throw new Error('Invalid GeoJSON object.');
+			}
+			var xdomain = d3.extent(this._data, function(d) {
+				return d.dist;
+			});
+			var ydomain = d3.extent(this._data, function(d) {
+				return d.altitude;
+			});
+
+			this._x.domain(xdomain);
+			this._y.domain(ydomain);
+			this._areapath.datum(this._data)
+				.attr("d", this._area);
+			this._updateAxis();
+			return;
 		}
-		var xdomain = d3.extent(this._data, function(d) {
-			return d.dist;
-		});
-		var ydomain = d3.extent(this._data, function(d) {
-			return d.altitude;
-		});
-
-		this._x.domain(xdomain);
-		this._y.domain(ydomain);
-		this._areapath.datum(this._data)
-			.attr("d", this._area);
-		this._updateAxis();
+		var feat = d && d.type === "FeatureCollection";
+		if (feat) {
+			for (i = 0; i < d.features.length; i++) {
+				this.addData(d.features[i]);
+			}
+		}
 	}
 });
 
