@@ -196,7 +196,7 @@ L.Control.Elevation = L.Control.extend({
 		}
 	},
 
-	_addData: function(coords) {
+	_addGeoJSONData: function(coords) {
 		if (coords) {
 			var data = this._data || [];
 			var dist = this._dist || 0;
@@ -218,37 +218,46 @@ L.Control.Elevation = L.Control.extend({
 		}
 	},
 
+	_addGPXdata: function(coords) {
+		if (coords) {
+			var data = this._data || [];
+			var dist = this._dist || 0;
+			for (var i = 0; i < coords.length; i++) {
+				var s = coords[i];
+				var e = coords[i ? i - 1 : 0];
+				var newdist = s.distanceTo(e);
+				dist = dist + newdist / 1000;
+				data.push({
+					dist: dist,
+					altitude: s.meta.ele,
+					x: s.lng,
+					y: s.lat,
+					latlng: s
+				});
+			}
+			this._dist = dist;
+			this._data = data;
+		}
+	},
+
 	addData: function(d) {
 		var geom = d && d.geometry && d.geometry;
 		var i;
 		if (geom) {
 			switch (geom.type) {
 				case 'LineString':
-					this._addData(geom.coordinates);
+					this._addGeoJSONData(geom.coordinates);
 					break;
 
 				case 'MultiLineString':
 					for (i = 0; i < geom.coordinates.length; i++) {
-						this._addData(geom.coordinates[i]);
+						this._addGeoJSONData(geom.coordinates[i]);
 					}
 					break;
 
 				default:
 					throw new Error('Invalid GeoJSON object.');
 			}
-			var xdomain = d3.extent(this._data, function(d) {
-				return d.dist;
-			});
-			var ydomain = d3.extent(this._data, function(d) {
-				return d.altitude;
-			});
-
-			this._x.domain(xdomain);
-			this._y.domain(ydomain);
-			this._areapath.datum(this._data)
-				.attr("d", this._area);
-			this._updateAxis();
-			return;
 		}
 		var feat = d && d.type === "FeatureCollection";
 		if (feat) {
@@ -256,6 +265,22 @@ L.Control.Elevation = L.Control.extend({
 				this.addData(d.features[i]);
 			}
 		}
+		if (d && d._latlngs) {
+			this._addGPXdata(d._latlngs);
+		}
+		var xdomain = d3.extent(this._data, function(d) {
+			return d.dist;
+		});
+		var ydomain = d3.extent(this._data, function(d) {
+			return d.altitude;
+		});
+
+		this._x.domain(xdomain);
+		this._y.domain(ydomain);
+		this._areapath.datum(this._data)
+			.attr("d", this._area);
+		this._updateAxis();
+		return;
 	}
 });
 

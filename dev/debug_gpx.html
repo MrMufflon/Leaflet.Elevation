@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Coordinate viewing test page</title>
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	 <style>
+	   html, body, #map {
+	      height:100%;
+	      width:100%;
+	      padding:0px;
+	      margin:0px;
+	   } 
+	</style>
+	<script src="http://d3js.org/d3.v3.js" charset="utf-8"></script>
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
+	<!--[if lte IE 8]><link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.ie.css" /><![endif]-->
+
+	<link rel="stylesheet" href="../src/L.Control.Elevation.css" />
+
+	<script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet-src.js"></script>
+	<script type="text/javascript" src="include.js"></script>
+	<script type="text/javascript" src="../lib/leaflet-gpx/gpx.js"></script>
+</head>
+<body>
+
+	<div id="map"></div>
+
+	<script type="text/javascript">
+		var map = new L.Map('map');
+
+		var url = 'http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg',
+			attr ='Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data {attribution.OpenStreetMap}',
+			service = new L.TileLayer(url, {subdomains:"1234",attribution: attr});
+
+		var el = L.control.elevation();
+		el.addTo(map);
+		var g=new L.GPX("./dunedin.gpx", {
+			async: true,
+			 marker_options: {
+			    startIconUrl: '../lib/leaflet-gpx/pin-icon-start.png',
+			    endIconUrl: '../lib/leaflet-gpx/pin-icon-end.png',
+			    shadowUrl: '../lib/leaflet-gpx/pin-shadow.png'
+			  }
+		});
+		g.on('loaded', function(e) {
+		  		map.fitBounds(e.target.getBounds());
+		});
+		g.on("addline",function(e){
+			el.addData(e.line);
+		});
+		g.addTo(map);
+		map.addLayer(service);
+
+	</script>
+</body>
+</html>

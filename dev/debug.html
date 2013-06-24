@@ -42,7 +42,8 @@
 		el.addTo(map);
 		var gjl = L.geoJson(geojson,{
 		    onEachFeature: el.addData.bind(el)
-		}).addTo(map);
+		});
+		gjl.addTo(map);
 
 		map.addLayer(service).fitBounds(bounds);
 

@@ -2,13 +2,18 @@ Leaflet.Elevation
 =================
 
 ### What is this?
-A [Leaflet](http://leafletjs.com) plugin to view an interactive height profile of GeoJSON lines using [d3](http://d3js.org).
+A [Leaflet](http://leafletjs.com) plugin to view an interactive height profile of polylines lines using [d3](http://d3js.org). This plugin is under development. 
+
+Support for
+- GeoJSON 
+- GPX-files using [leaflet-gpx](https://github.com/mpetazzoni/leaflet-gpx)
 
 *Tested with Leaflet 0.5*
 
 [Demo](http://mrmufflon.github.io/Leaflet.Elevation/example/example.html)
 
 <img src="http://mrmufflon.github.io/Leaflet.Elevation/images/screen.jpg"/>
+
 
 ### How to use
 ```javascript
