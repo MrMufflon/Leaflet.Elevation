@@ -8,7 +8,7 @@ Support for
 - GeoJSON [Demo](http://mrmufflon.github.io/Leaflet.Elevation/example/example.html)
 - GPX-files using [leaflet-gpx](https://github.com/mpetazzoni/leaflet-gpx) [Demo](http://mrmufflon.github.io/Leaflet.Elevation/example/example_gpx.html)
 
-*Tested with Leaflet 0.5*
+*Tested with Leaflet 0.4+*
 
 <img src="http://mrmufflon.github.io/Leaflet.Elevation/images/screen.jpg"/>
 

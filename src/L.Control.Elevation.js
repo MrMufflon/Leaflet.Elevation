@@ -166,6 +166,9 @@ L.Control.Elevation = L.Control.extend({
 	},
 
 	_mousemoveHandler: function(d, i, ctx) {
+		if (!this._data || this._data.length === 0) {
+			return;
+		}
 		var coords = d3.mouse(this._background.node());
 		var opts = this.options;
 		this._focusG.style("visibility", "visible");
