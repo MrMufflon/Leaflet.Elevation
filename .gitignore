@@ -215,3 +215,7 @@ pip-log.txt
 
 #Node
 node_modules
+
+#css files from src
+src/css/*.css
+src/css/**/*.css

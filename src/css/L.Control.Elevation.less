@@ -1,0 +1,50 @@
+.@{theme}{
+
+	.leaflet-control.elevation .background{
+		background-color:@background;
+		.rounded-corners;
+	}
+
+	.leaflet-control.elevation{
+		.axis path, 
+		.axis line {
+			fill: none;
+			stroke: @axis-color;
+			stroke-width:@stroke-width-axis;
+		}
+	} 
+
+	.leaflet-control.elevation  .area {
+		fill: @base-color;
+	}
+
+	.leaflet-control.elevation  .mouse-focus-line {
+		pointer-events: none;
+		stroke-width:@stroke-width-mouse-focus;
+		stroke:@stroke-color;
+	}
+
+	.leaflet-control.elevation{
+		.mouse-focus-label-y,
+		.mouse-focus-label-x {
+
+		} 
+	} 
+
+	.leaflet-overlay-pane {
+		.height-focus{
+			stroke:@base-color;
+			fill:@base-color;
+		}
+		.height-focus.line{
+			pointer-events: none;
+			stroke-width:@stroke-width-height-focus;
+		}
+		.height-focus-label{
+
+		}
+		.height-focus.circle-lower {
+		
+		}
+	} 
+}

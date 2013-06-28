@@ -32,7 +32,8 @@ module.exports = function(grunt) {
     cssmin: {
       combine: {
         files: {
-          'dist/<%= pkg.name %>-<%= pkg.version%>.css': ['src/L.Control.Elevation.css']
+          'dist/<%= pkg.name %>-<%= pkg.version%>.css': ['tmp/css/themes/lime.min.css', 'tmp/css/themes/steelblue.min.css', 'tmp/css/themes/purple.min.css'],
+          'src/css/L.Control.Elevation.css': ['src/css/themes/lime.css', 'src/css/themes/steelblue.css', 'src/css/themes/purple.css']
         }
       },
       minify: {
@@ -53,6 +54,25 @@ module.exports = function(grunt) {
           module: true
         }
       }
+    },
+    less: {
+      development: {
+        files: {
+          "src/css/themes/lime.css": "src/css/themes/lime.less",
+          "src/css/themes/purple.css": "src/css/themes/purple.less",
+          "src/css/themes/steelblue.css": "src/css/themes/steelblue.less"
+        }
+      },
+      production: {
+        options: {
+          yuicompress: true
+        },
+        files: {
+          "tmp/css/themes/lime.min.css": "src/css/themes/lime.less",
+          "tmp/css/themes/purple.min.css": "src/css/themes/purple.less",
+          "tmp/css/themes/steelblue.min.css": "src/css/themes/steelblue.less"
+        }
+      }
     }
 
   });
@@ -62,8 +82,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-less');
 
   // Default task(s).
-  grunt.registerTask('default', ['clean', 'jshint', 'concat', 'uglify', 'cssmin']);
+  grunt.registerTask('default', ['clean', 'jshint', 'concat', 'uglify', 'less', 'cssmin']);
 
 };

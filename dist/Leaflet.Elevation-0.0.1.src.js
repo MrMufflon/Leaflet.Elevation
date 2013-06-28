@@ -1,6 +1,7 @@
 L.Control.Elevation = L.Control.extend({
 	options: {
 		position: "topright",
+		theme: "lime-theme",
 		width: 600,
 		height: 175,
 		margins: {
@@ -36,6 +37,9 @@ L.Control.Elevation = L.Control.extend({
 		opts.xTicks = opts.xTicks || Math.round(opts.width / 75);
 		opts.yTicks = opts.yTicks || Math.round(opts.height / 30);
 		opts.hoverNumber.formatter = opts.hoverNumber.formatter || this._formatter;
+
+		//append theme name on body
+		d3.select("body").classed(opts.theme, true);
 
 		var x = this._x = d3.scale.linear()
 			.range([0, opts.width]);
@@ -169,6 +173,9 @@ L.Control.Elevation = L.Control.extend({
 			this._mouseHeightFocus.style("visibility", "hidden");
 			this._mouseHeightFocusLabel.style("visibility", "hidden");
 		}
+		if (this._pointG) {
+			this._pointG.style("visibility", "hidden");
+		}
 		this._focusG.style("visibility", "hidden");
 	},
 
@@ -211,11 +218,18 @@ L.Control.Elevation = L.Control.extend({
 				var heightG = d3.select(".leaflet-overlay-pane svg")
 					.append("g");
 				this._mouseHeightFocus = heightG.append('svg:line')
-					.attr('class', 'height-focus-line')
+					.attr('class', 'height-focus line')
 					.attr('x2', '0')
 					.attr('y2', '0')
 					.attr('x1', '0')
 					.attr('y1', '0');
+
+				var pointG = this._pointG = heightG.append("g");
+				pointG.append("svg:circle")
+					.attr("r", 6)
+					.attr("cx", 0)
+					.attr("cy", 0)
+					.attr("class", "height-focus circle-lower");
 
 				this._mouseHeightFocusLabel = heightG.append("svg:text")
 					.attr("class", "height-focus-label")
@@ -229,6 +243,9 @@ L.Control.Elevation = L.Control.extend({
 				.attr("x2", layerpoint.x)
 				.attr("y1", layerpoint.y)
 				.attr("y2", normalizedY)
+				.style("visibility", "visible");
+
+			this._pointG.attr("transform", "translate(" + layerpoint.x + "," + layerpoint.y + ")")
 				.style("visibility", "visible");
 
 			this._mouseHeightFocusLabel.attr("x", layerpoint.x)
