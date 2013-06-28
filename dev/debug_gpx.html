@@ -19,7 +19,7 @@
 
 	
 	<script type="text/javascript" src="include.js"></script>
-	<script type="text/javascript" src="../lib/leaflet-gpx/gpx.js"></script>
+
 </head>
 <body>
 
@@ -32,7 +32,9 @@
 			attr ='Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data {attribution.OpenStreetMap}',
 			service = new L.TileLayer(url, {subdomains:"1234",attribution: attr});
 
-		var el = L.control.elevation();
+		var el = L.control.elevation({
+			width:300
+		});
 		el.addTo(map);
 		var g=new L.GPX("./dunedin.gpx", {
 			async: true,

@@ -15,8 +15,22 @@
 	fill: steelblue;
 }
 
-.leaflet-control.elevation  .link.dragline {
+.leaflet-control.elevation  .mouse-focus-line {
 	pointer-events: none;
 	stroke-width:1;
 	stroke:black;
+}
+
+.leaflet-control.elevation .mouse-focus-label-y,
+.leaflet-control.elevation .mouse-focus-label-x {
+
+} 
+
+.leaflet-overlay-pane  .height-focus-line{
+	pointer-events: none;
+	stroke-width:2;
+	stroke:steelblue;
+}
+.leaflet-overlay-pane  .height-focus-label{
+
 }

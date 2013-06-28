@@ -1,6 +1,7 @@
 (function() {
 	var scripts = [
-			"L.Control.Elevation.js"
+			"L.Control.Elevation.js",
+			"../lib/leaflet-gpx/gpx.js"
 	];
 
 	function getSrcUrl() {

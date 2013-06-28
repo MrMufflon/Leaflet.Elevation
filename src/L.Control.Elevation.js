@@ -2,13 +2,14 @@ L.Control.Elevation = L.Control.extend({
 	options: {
 		position: "topright",
 		width: 600,
-		height: 125,
+		height: 175,
 		margins: {
 			top: 10,
 			right: 20,
 			bottom: 30,
 			left: 50
 		},
+		useHeightIndicator: true,
 		interpolation: "linear",
 		hoverNumber: {
 			decimalsX: 3,
@@ -94,15 +95,17 @@ L.Control.Elevation = L.Control.extend({
 
 		var focusG = this._focusG = g.append("g");
 		this._mousefocus = focusG.append('svg:line')
-			.attr('class', 'link dragline')
+			.attr('class', 'mouse-focus-line')
 			.attr('x2', '0')
 			.attr('y2', '0')
 			.attr('x1', '0')
 			.attr('y1', '0');
 		this._focuslabelX = focusG.append("svg:text")
-			.style("pointer-events", "none");
+			.style("pointer-events", "none")
+			.attr("class", "mouse-focus-label-x");
 		this._focuslabelY = focusG.append("svg:text")
-			.style("pointer-events", "none");
+			.style("pointer-events", "none")
+			.attr("class", "mouse-focus-label-y");
 
 		return container;
 	},
@@ -162,6 +165,10 @@ L.Control.Elevation = L.Control.extend({
 			this._map.removeLayer(this._marker);
 			this._marker = null;
 		}
+		if (this._mouseHeightFocus) {
+			this._mouseHeightFocus.style("visibility", "hidden");
+			this._mouseHeightFocusLabel.style("visibility", "hidden");
+		}
 		this._focusG.style("visibility", "hidden");
 	},
 
@@ -180,6 +187,7 @@ L.Control.Elevation = L.Control.extend({
 		var bisect = d3.bisector(function(d) {
 			return d.dist;
 		}).left;
+
 		var xinvert = this._x.invert(coords[0]),
 			item = bisect(this._data, xinvert),
 			alt = this._data[item].altitude,
@@ -187,27 +195,74 @@ L.Control.Elevation = L.Control.extend({
 			ll = this._data[item].latlng,
 			numY = opts.hoverNumber.formatter(alt, opts.hoverNumber.decimalsY),
 			numX = opts.hoverNumber.formatter(dist, opts.hoverNumber.decimalsX);
+
 		this._focuslabelX.attr("x", coords[0])
 			.text(numY + " m");
 		this._focuslabelY.attr("y", opts.height - 5)
 			.attr("x", coords[0])
 			.text(numX + " km");
-		if (!this._marker) {
-			this._marker = new L.Marker(ll).addTo(this._map);
+
+		var layerpoint = this._map.latLngToLayerPoint(ll);
+
+		if (opts.useHeightIndicator) {
+
+			if (!this._mouseHeightFocus) {
+
+				var heightG = d3.select(".leaflet-overlay-pane svg")
+					.append("g");
+				this._mouseHeightFocus = heightG.append('svg:line')
+					.attr('class', 'height-focus-line')
+					.attr('x2', '0')
+					.attr('y2', '0')
+					.attr('x1', '0')
+					.attr('y1', '0');
+
+				this._mouseHeightFocusLabel = heightG.append("svg:text")
+					.attr("class", "height-focus-label")
+					.style("pointer-events", "none");
+
+			}
+
+			var normalizedAlt = this.options.height / this._maxElevation * alt;
+			var normalizedY = layerpoint.y - normalizedAlt;
+			this._mouseHeightFocus.attr("x1", layerpoint.x)
+				.attr("x2", layerpoint.x)
+				.attr("y1", layerpoint.y)
+				.attr("y2", normalizedY)
+				.style("visibility", "visible");
+
+			this._mouseHeightFocusLabel.attr("x", layerpoint.x)
+				.attr("y", normalizedY)
+				.text(alt + " m")
+				.style("visibility", "visible");
+
 		} else {
-			this._marker.setLatLng(ll);
+
+			if (!this._marker) {
+
+				this._marker = new L.Marker(ll).addTo(this._map);
+
+			} else {
+
+				this._marker.setLatLng(ll);
+
+			}
+
 		}
+
 	},
 
 	_addGeoJSONData: function(coords) {
 		if (coords) {
 			var data = this._data || [];
 			var dist = this._dist || 0;
+			var ele = this._maxElevation || 0;
 			for (var i = 0; i < coords.length; i++) {
 				var s = new L.LatLng(coords[i][1], coords[i][0]);
 				var e = new L.LatLng(coords[i ? i - 1 : 0][1], coords[i ? i - 1 : 0][0]);
 				var newdist = s.distanceTo(e);
 				dist = dist + newdist / 1000;
+				ele = ele < coords[i][2] ? coords[i][2] : ele;
 				data.push({
 					dist: dist,
 					altitude: coords[i][2],
@@ -218,6 +273,7 @@ L.Control.Elevation = L.Control.extend({
 			}
 			this._dist = dist;
 			this._data = data;
+			this._maxElevation = ele;
 		}
 	},
 
@@ -225,11 +281,13 @@ L.Control.Elevation = L.Control.extend({
 		if (coords) {
 			var data = this._data || [];
 			var dist = this._dist || 0;
+			var ele = this._maxElevation || 0;
 			for (var i = 0; i < coords.length; i++) {
 				var s = coords[i];
 				var e = coords[i ? i - 1 : 0];
 				var newdist = s.distanceTo(e);
 				dist = dist + newdist / 1000;
+				ele = ele < s.meta.ele ? s.meta.ele : ele;
 				data.push({
 					dist: dist,
 					altitude: s.meta.ele,
@@ -240,6 +298,7 @@ L.Control.Elevation = L.Control.extend({
 			}
 			this._dist = dist;
 			this._data = data;
+			this._maxElevation = ele;
 		}
 	},
 
@@ -285,6 +344,7 @@ L.Control.Elevation = L.Control.extend({
 		this._updateAxis();
 		return;
 	}
+
 });
 
 L.control.elevation = function(options) {
