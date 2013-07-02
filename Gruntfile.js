@@ -73,6 +73,21 @@ module.exports = function(grunt) {
           "tmp/css/themes/steelblue.min.css": "src/css/themes/steelblue.less"
         }
       }
+    },
+    jasmine: {
+      pivotal: {
+        src: [
+            'src/**/*.js'
+        ],
+        options: {
+          specs: 'spec/*Spec.js',
+          helpers: 'spec/*Helper.js',
+          vendor: [
+              'http://cdn.leafletjs.com/leaflet-0.6/leaflet-src.js',
+              'http://d3js.org/d3.v3.js'
+          ]
+        }
+      }
     }
 
   });
@@ -83,8 +98,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-contrib-jasmine');
 
   // Default task(s).
-  grunt.registerTask('default', ['clean', 'jshint', 'concat', 'uglify', 'less', 'cssmin']);
+  grunt.registerTask('default', ['clean', 'jshint', 'jasmine', 'concat', 'uglify', 'less', 'cssmin']);
 
 };

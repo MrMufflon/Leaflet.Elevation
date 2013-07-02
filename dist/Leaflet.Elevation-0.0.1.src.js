@@ -114,6 +114,9 @@ L.Control.Elevation = L.Control.extend({
 		return container;
 	},
 
+	/*
+	 * Fromatting funciton using the given decimals and seperator
+	 */
 	_formatter: function(num, dec, sep) {
 		var res;
 		if (dec === 0) {
@@ -211,6 +214,8 @@ L.Control.Elevation = L.Control.extend({
 
 		var layerpoint = this._map.latLngToLayerPoint(ll);
 
+		//if we use a height indicator we create one with SVG
+		//otherwise we show a marker
 		if (opts.useHeightIndicator) {
 
 			if (!this._mouseHeightFocus) {
@@ -269,6 +274,9 @@ L.Control.Elevation = L.Control.extend({
 
 	},
 
+	/*
+	 * Parsing of GeoJSON data lines and their elevation in z-coordinate
+	 */
 	_addGeoJSONData: function(coords) {
 		if (coords) {
 			var data = this._data || [];
@@ -294,6 +302,9 @@ L.Control.Elevation = L.Control.extend({
 		}
 	},
 
+	/*
+	 * Parsing function for GPX data as used by https://github.com/mpetazzoni/leaflet-gpx
+	 */
 	_addGPXdata: function(coords) {
 		if (coords) {
 			var data = this._data || [];
@@ -319,9 +330,10 @@ L.Control.Elevation = L.Control.extend({
 		}
 	},
 
-	addData: function(d) {
+	_addData: function(d) {
 		var geom = d && d.geometry && d.geometry;
 		var i;
+
 		if (geom) {
 			switch (geom.type) {
 				case 'LineString':
@@ -338,15 +350,27 @@ L.Control.Elevation = L.Control.extend({
 					throw new Error('Invalid GeoJSON object.');
 			}
 		}
+
 		var feat = d && d.type === "FeatureCollection";
 		if (feat) {
 			for (i = 0; i < d.features.length; i++) {
-				this.addData(d.features[i]);
+				this._addData(d.features[i]);
 			}
 		}
+
 		if (d && d._latlngs) {
 			this._addGPXdata(d._latlngs);
 		}
+	},
+
+	/*
+	 * Add data to the diagram either from GPX or GeoJSON and
+	 * update the axis domain and data
+	 */
+	addData: function(d) {
+
+		this._addData(d);
+
 		var xdomain = d3.extent(this._data, function(d) {
 			return d.dist;
 		});
