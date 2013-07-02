@@ -18,7 +18,7 @@
 	<link rel="stylesheet" href="../dist/Leaflet.Elevation-0.0.1.css" />
 
 	<script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
-	<script type="text/javascript" src="../dist/Leaflet.Elevation-0.0.1.src.js"></script
+	<script type="text/javascript" src="../dist/Leaflet.Elevation-0.0.1.min.js"></script
 	><script type="text/javascript" src="./lib/leaflet-gpx/gpx.js"></script>
 </head>
 <body>
@@ -42,11 +42,11 @@
 			    shadowUrl: './lib/leaflet-gpx/pin-shadow.png'
 			  }
 		});
-		g.on("addline",function(e){
-			el.addData(e.line);
-		});
 		g.on('loaded', function(e) {
 		  		map.fitBounds(e.target.getBounds());
+		});
+		g.on("addline",function(e){
+			el.addData(e.line);
 		});
 		g.addTo(map);
 		map.addLayer(service);
