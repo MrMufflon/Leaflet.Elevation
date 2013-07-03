@@ -18,7 +18,7 @@
 	}
 
 	var query = window.location.href.split("?")[1];
-	var version = "0.6";
+	var version = "0.6.2";
 	if (query) {
 		var params = query.split("=");
 		if (params[0] === "leaflet") {

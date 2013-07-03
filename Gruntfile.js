@@ -84,8 +84,18 @@ module.exports = function(grunt) {
           helpers: 'spec/*Helper.js',
           vendor: [
               'http://cdn.leafletjs.com/leaflet-0.6/leaflet-src.js',
+              './lib/leaflet-gpx/gpx.js',
               'http://d3js.org/d3.v3.js'
-          ]
+          ],
+          '--local-to-remote-url-access': true
+        }
+      }
+    },
+    connect: {
+      server: {
+        options: {
+          port: 9001,
+          base: 'spec'
         }
       }
     }
@@ -99,8 +109,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-jasmine');
+  grunt.loadNpmTasks('grunt-contrib-connect');
 
   // Default task(s).
-  grunt.registerTask('default', ['clean', 'jshint', 'jasmine', 'concat', 'uglify', 'less', 'cssmin']);
+  grunt.registerTask('default', ['clean', 'jshint', 'connect', 'jasmine', 'concat', 'uglify', 'less', 'cssmin']);
 
 };

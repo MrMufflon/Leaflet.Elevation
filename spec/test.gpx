@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>    
+<gpx  version="1.1"
+	creator="MyTourbook 11.8.2.201108281719 - http://mytourbook.sourceforge.net"
+	xmlns="http://www.topografix.com/GPX/1/1"
+	xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
+	xmlns:gpxx="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+	xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+	xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd 
+	http://www.cluetrust.com/XML/GPXDATA/1/0 http://www.cluetrust.com/Schemas/gpxdata10.xsd 
+	http://www.garmin.com/xmlschemas/GpxExtensions/v3 http://www.garmin.com/xmlschemas/GpxExtensionsv3.xsd 
+	http://www.garmin.com/xmlschemas/TrackPointExtension/v1 http://www.garmin.com/xmlschemas/TrackPointExtensionv1.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">	
+	<time>2013-06-24T20:24:57Z</time>
+	<bounds minlat="-45.901737213134766" minlon="170.11463284492493" maxlat="-45.50569295883179" maxlon="170.65116047859192"/>
+	<trk>
+		<name></name>
+		<trkseg>
+			<trkpt lat="-45.842434" lon="170.651075">
+				<ele>-18</ele>
+				<time>2011-03-09T18:23:33Z</time>
+				<extensions>
+					<gpxtpx:TrackPointExtension>
+						<gpxtpx:cad>0</gpxtpx:cad>
+					</gpxtpx:TrackPointExtension>
+					<gpxdata:distance>0.000000</gpxdata:distance>
+				</extensions>
+			</trkpt>
+			<trkpt lat="-45.842444" lon="170.651155">
+				<ele>3</ele>
+				<time>2011-03-09T18:23:38Z</time>
+				<extensions>
+					<gpxtpx:TrackPointExtension>
+						<gpxtpx:cad>0</gpxtpx:cad>
+					</gpxtpx:TrackPointExtension>
+					<gpxdata:distance>6.000000</gpxdata:distance>
+				</extensions>
+			</trkpt>
+			<trkpt lat="-45.842444" lon="170.651160">
+				<ele>17</ele>
+				<time>2011-03-09T18:23:49Z</time>
+				<extensions>
+					<gpxtpx:TrackPointExtension>
+						<gpxtpx:cad>0</gpxtpx:cad>
+					</gpxtpx:TrackPointExtension>
+					<gpxdata:distance>0.000000</gpxdata:distance>
+				</extensions>
+			</trkpt>
+			<trkpt lat="-45.842444" lon="170.651160">
+				<ele>17</ele>
+				<time>2011-03-09T18:23:55Z</time>
+				<extensions>
+					<gpxtpx:TrackPointExtension>
+						<gpxtpx:cad>0</gpxtpx:cad>
+					</gpxtpx:TrackPointExtension>
+					<gpxdata:distance>0.000000</gpxdata:distance>
+				</extensions>
+			</trkpt>
+			<trkpt lat="-45.842439" lon="170.651160">
+				<ele>18</ele>
+				<time>2011-03-09T18:24:07Z</time>
+				<extensions>
+					<gpxtpx:TrackPointExtension>
+						<gpxtpx:cad>0</gpxtpx:cad>
+					</gpxtpx:TrackPointExtension>
+					<gpxdata:distance>1.000000</gpxdata:distance>
+				</extensions>
+			</trkpt>
+			<trkpt lat="-45.842439" lon="170.651155">
+				<ele>18</ele>
+				<time>2011-03-09T18:24:13Z</time>
+				<extensions>
+					<gpxtpx:TrackPointExtension>
+						<gpxtpx:cad>0</gpxtpx:cad>
+					</gpxtpx:TrackPointExtension>
+					<gpxdata:distance>0.000000</gpxdata:distance>
+				</extensions>
+			</trkpt>
+			<trkpt lat="-45.506498" lon="170.126440">
+				<ele>207</ele>
+				<time>2011-03-10T00:36:33Z</time>
+				<extensions>
+					<gpxtpx:TrackPointExtension>
+						<gpxtpx:cad>0</gpxtpx:cad>
+					</gpxtpx:TrackPointExtension>
+					<gpxdata:distance>0.000000</gpxdata:distance>
+				</extensions>
+			</trkpt>
+			<trkpt lat="-45.506498" lon="170.126440">
+				<ele>207</ele>
+				<time>2011-03-10T00:36:45Z</time>
+				<extensions>
+					<gpxtpx:TrackPointExtension>
+						<gpxtpx:cad>0</gpxtpx:cad>
+					</gpxtpx:TrackPointExtension>
+					<gpxdata:distance>0.000000</gpxdata:distance>
+				</extensions>
+			</trkpt>
+			<trkpt lat="-45.506498" lon="170.126440">
+				<ele>207</ele>
+				<time>2011-03-10T00:36:51Z</time>
+				<extensions>
+					<gpxtpx:TrackPointExtension>
+						<gpxtpx:cad>0</gpxtpx:cad>
+					</gpxtpx:TrackPointExtension>
+					<gpxdata:distance>0.000000</gpxdata:distance>
+				</extensions>
+			</trkpt>
+		</trkseg>
+	</trk>
+</gpx>
