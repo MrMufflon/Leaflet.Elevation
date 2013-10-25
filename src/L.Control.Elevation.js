@@ -18,7 +18,8 @@ L.Control.Elevation = L.Control.extend({
 			formatter: undefined
 		},
 		xTicks: undefined,
-		yTicks: undefined
+		yTicks: undefined,
+		collapsed: false
 	},
 
 	onRemove: function(map) {
@@ -58,6 +59,9 @@ L.Control.Elevation = L.Control.extend({
 		});
 
 		var container = this._container = L.DomUtil.create("div", "elevation");
+		
+		this._initToggle();
+
 		var complWidth = opts.width + margin.left + margin.right;
 		var cont = d3.select(container);
 		cont.attr("width", complWidth);
@@ -112,6 +116,58 @@ L.Control.Elevation = L.Control.extend({
 			.attr("class", "mouse-focus-label-y");
 
 		return container;
+	},
+
+	_initToggle: function () {
+
+		/* inspired by L.Control.Layers */
+
+		var container = this._container;
+
+		//Makes this work on IE10 Touch devices by stopping it from firing a mouseout event when the touch is released
+		container.setAttribute('aria-haspopup', true);
+
+		if (!L.Browser.touch) {
+			L.DomEvent
+				.disableClickPropagation(container);
+				//.disableScrollPropagation(container);
+		} else {
+			L.DomEvent.on(container, 'click', L.DomEvent.stopPropagation);
+		}
+
+		if (this.options.collapsed)
+		{
+			this._collapse();
+
+			if (!L.Browser.android) {
+				L.DomEvent
+					.on(container, 'mouseover', this._expand, this)
+					.on(container, 'mouseout', this._collapse, this);
+			}
+			var link = this._button = L.DomUtil.create('a', 'elevation-toggle', container);
+			link.href = '#';
+			link.title = 'Elevation';
+
+			if (L.Browser.touch) {
+				L.DomEvent
+					.on(link, 'click', L.DomEvent.stop)
+					.on(link, 'click', this._expand, this);
+			}
+			else {
+				L.DomEvent.on(link, 'focus', this._expand, this);
+			}
+
+			this._map.on('click', this._collapse, this);
+			// TODO keyboard accessibility
+		}
+	},
+
+	_expand: function () {
+		this._container.className = this._container.className.replace(' elevation-collapsed', '');
+	},
+
+	_collapse: function () {
+		L.DomUtil.addClass(this._container, 'elevation-collapsed');
 	},
 
 	/*
