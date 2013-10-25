@@ -141,8 +141,8 @@ L.Control.Elevation = L.Control.extend({
 
 			if (!L.Browser.android) {
 				L.DomEvent
-				    .on(container, 'mouseover', this._expand, this)
-				    .on(container, 'mouseout', this._collapse, this);
+					.on(container, 'mouseover', this._expand, this)
+					.on(container, 'mouseout', this._collapse, this);
 			}
 			var link = this._button = L.DomUtil.create('a', 'elevation-toggle', container);
 			link.href = '#';
@@ -150,8 +150,8 @@ L.Control.Elevation = L.Control.extend({
 
 			if (L.Browser.touch) {
 				L.DomEvent
-				    .on(link, 'click', L.DomEvent.stop)
-				    .on(link, 'click', this._expand, this);
+					.on(link, 'click', L.DomEvent.stop)
+					.on(link, 'click', this._expand, this);
 			}
 			else {
 				L.DomEvent.on(link, 'focus', this._expand, this);

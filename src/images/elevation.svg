@@ -13,7 +13,7 @@
    version="1.1"
    inkscape:version="0.47 r22583"
    sodipodi:docname="elevation.svg"
-   inkscape:export-filename="/home/z4k/www/maps/Leaflet.Elevation/dist/images/elevation.png"
+   inkscape:export-filename="/home/z4k/www/maps/Leaflet.Elevation/src/images/elevation.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <metadata
@@ -60,7 +60,7 @@
      showgrid="false"
      inkscape:zoom="12.836708"
      inkscape:cx="9.2793304"
-     inkscape:cy="10.220876"
+     inkscape:cy="10.065073"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
