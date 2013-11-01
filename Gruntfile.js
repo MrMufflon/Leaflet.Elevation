@@ -74,6 +74,13 @@ module.exports = function(grunt) {
         }
       }
     },
+    svg2png: {
+        all: {
+            files: [
+                { src: ['src/images/*.svg'], dest: 'dist/images/' }
+            ]
+        }
+    },
     jasmine: {
       pivotal: {
         src: [
@@ -101,7 +108,7 @@ module.exports = function(grunt) {
     }
 
   });
-
+  
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-clean');
@@ -110,8 +117,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-jasmine');
   grunt.loadNpmTasks('grunt-contrib-connect');
-
+  grunt.loadNpmTasks('grunt-svg2png');
+  
   // Default task(s).
-  grunt.registerTask('default', ['clean', 'jshint', 'connect', 'jasmine', 'concat', 'uglify', 'less', 'cssmin']);
+  grunt.registerTask('default', ['clean', 'jshint', 'connect', 'jasmine', 'concat', 'uglify', 'less', 'cssmin', 'svg2png']);
 
 };

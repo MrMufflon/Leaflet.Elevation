@@ -36,7 +36,8 @@ var el = L.control.elevation({
 		formatter: undefined //custom formatter function may be injected
 	},
 	xTicks: undefined, //number of ticks in x axis, calculated by default according to width
-	yTicks: undefined //number of ticks on y axis, calculated by default according to height
+	yTicks: undefined, //number of ticks on y axis, calculated by default according to height
+	collapsed: false	//collapsed mode, show chart on click or mouseover
 });
 el.addTo(map);
 L.geoJson(geojson,{
