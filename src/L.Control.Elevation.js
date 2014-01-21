@@ -33,27 +33,25 @@ L.Control.Elevation = L.Control.extend({
 
 		var opts = this.options;
 		var margin = opts.margins;
-		opts.width = opts.width - margin.left - margin.right;
-		opts.height = opts.height - margin.top - margin.bottom;
-		opts.xTicks = opts.xTicks || Math.round(opts.width / 75);
-		opts.yTicks = opts.yTicks || Math.round(opts.height / 30);
+		opts.xTicks = opts.xTicks || Math.round(this._width() / 75);
+		opts.yTicks = opts.yTicks || Math.round(this._height() / 30);
 		opts.hoverNumber.formatter = opts.hoverNumber.formatter || this._formatter;
 
 		//append theme name on body
 		d3.select("body").classed(opts.theme, true);
 
 		var x = this._x = d3.scale.linear()
-			.range([0, opts.width]);
+			.range([0, this._width()]);
 
 		var y = this._y = d3.scale.linear()
-			.range([opts.height, 0]);
+			.range([this._height(), 0]);
 
 		var area = this._area = d3.svg.area()
 			.interpolate(opts.interpolation)
 			.x(function(d) {
 			return x(d.dist);
 		})
-			.y0(opts.height)
+			.y0(this._height())
 			.y1(function(d) {
 			return y(d.altitude);
 		});
@@ -62,13 +60,12 @@ L.Control.Elevation = L.Control.extend({
 		
 		this._initToggle();
 
-		var complWidth = opts.width + margin.left + margin.right;
 		var cont = d3.select(container);
-		cont.attr("width", complWidth);
+		cont.attr("width", opts.width);
 		var svg = cont.append("svg");
-		svg.attr("width", complWidth)
+		svg.attr("width", opts.width)
 			.attr("class", "background")
-			.attr("height", opts.height + margin.top + margin.bottom)
+			.attr("height", opts.height)
 			.append("g")
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -78,7 +75,7 @@ L.Control.Elevation = L.Control.extend({
 			return d3.mouse(svg.select("g"))[0];
 		})
 			.y(function(d) {
-			return opts.height;
+			return this._height();
 		});
 
 		var g = d3.select(this._container).select("svg").select("g");
@@ -87,8 +84,8 @@ L.Control.Elevation = L.Control.extend({
 			.attr("class", "area");
 
 		var background = this._background = g.append("rect")
-			.attr("width", opts.width)
-			.attr("height", opts.height)
+			.attr("width", this._width())
+			.attr("height", this._height())
 			.style("fill", "none")
 			.style("stroke", "none")
 			.style("pointer-events", "all");
@@ -170,6 +167,16 @@ L.Control.Elevation = L.Control.extend({
 		L.DomUtil.addClass(this._container, 'elevation-collapsed');
 	},
 
+	_width: function () {
+		var opts = this.options;
+		return opts.width - opts.margins.left - opts.margins.right;
+	},
+
+	_height: function () {
+		var opts = this.options;
+		return opts.height - opts.margins.top - opts.margins.bottom;
+	},
+
 	/*
 	 * Fromatting funciton using the given decimals and seperator
 	 */
@@ -205,13 +212,13 @@ L.Control.Elevation = L.Control.extend({
 
 	_appendXaxis: function(x) {
 		x.attr("class", "x axis")
-			.attr("transform", "translate(0," + this.options.height + ")")
+			.attr("transform", "translate(0," + this._height() + ")")
 			.call(d3.svg.axis()
 			.scale(this._x)
 			.ticks(this.options.xTicks)
 			.orient("bottom"))
 			.append("text")
-			.attr("x", this.options.width + 15)
+			.attr("x", this._width() + 15)
 			.style("text-anchor", "end")
 			.text("km");
 	},
@@ -248,7 +255,7 @@ L.Control.Elevation = L.Control.extend({
 		this._mousefocus.attr('x1', coords[0])
 			.attr('y1', 0)
 			.attr('x2', coords[0])
-			.attr('y2', opts.height)
+			.attr('y2', this._height())
 			.classed('hidden', false);
 		var bisect = d3.bisector(function(d) {
 			return d.dist;
@@ -264,7 +271,7 @@ L.Control.Elevation = L.Control.extend({
 
 		this._focuslabelX.attr("x", coords[0])
 			.text(numY + " m");
-		this._focuslabelY.attr("y", opts.height - 5)
+		this._focuslabelY.attr("y", this._height() - 5)
 			.attr("x", coords[0])
 			.text(numX + " km");
 
@@ -298,7 +305,7 @@ L.Control.Elevation = L.Control.extend({
 
 			}
 
-			var normalizedAlt = this.options.height / this._maxElevation * alt;
+			var normalizedAlt = this._height() / this._maxElevation * alt;
 			var normalizedY = layerpoint.y - normalizedAlt;
 			this._mouseHeightFocus.attr("x1", layerpoint.x)
 				.attr("x2", layerpoint.x)
