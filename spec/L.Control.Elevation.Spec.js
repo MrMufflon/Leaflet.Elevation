@@ -110,3 +110,34 @@ describe('L.Control.Elevation', function() {
 
 	});
 });
+
+describe('L.Control.Elevation', function() {
+	it('clears data to initial state', function() {
+		var el = new L.control.elevation();
+		var geojson = {
+			"name": "NewFeatureType",
+			"type": "FeatureCollection",
+			"features": [{
+					"type": "Feature",
+					"geometry": {
+						"type": "LineString",
+						"coordinates": [
+							[169.13693, -44.696476, 296],
+							[169.134602, -44.69764, 295],
+							[169.129983, -44.701164, 299]
+						]
+					},
+					"properties": null
+				}
+			]
+		};
+		var data = el._data;
+		var dist = el._dist;
+		var maxElevation = el._maxElevation;
+		el._addData(geojson);
+		el._clearData();
+		expect(el._data).toEqual(data);
+		expect(el._dist).toEqual(dist);
+		expect(el._maxElevation).toEqual(maxElevation);
+	});
+});
