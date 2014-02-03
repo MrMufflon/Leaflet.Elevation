@@ -217,8 +217,12 @@ L.Control.Elevation = L.Control.extend({
 	},
 
 	_updateAxis: function() {
-		this._xaxisgraphicnode.selectAll("axis").remove();
-		this._yaxisgraphicnode.selectAll("axis").remove();
+		this._xaxisgraphicnode.selectAll("g").remove();
+		this._xaxisgraphicnode.selectAll("path").remove();
+		this._xaxisgraphicnode.selectAll("text").remove();
+		this._yaxisgraphicnode.selectAll("g").remove();
+		this._yaxisgraphicnode.selectAll("path").remove();
+		this._yaxisgraphicnode.selectAll("text").remove();
 		this._appendXaxis(this._xaxisgraphicnode);
 		this._appendYaxis(this._yaxisgraphicnode);
 	},
