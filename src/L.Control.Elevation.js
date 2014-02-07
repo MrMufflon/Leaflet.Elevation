@@ -224,8 +224,12 @@ L.Control.Elevation = L.Control.extend({
 	},
 
 	_updateAxis: function() {
-		this._xaxisgraphicnode.selectAll("axis").remove();
-		this._yaxisgraphicnode.selectAll("axis").remove();
+		this._xaxisgraphicnode.selectAll("g").remove();
+		this._xaxisgraphicnode.selectAll("path").remove();
+		this._xaxisgraphicnode.selectAll("text").remove();
+		this._yaxisgraphicnode.selectAll("g").remove();
+		this._yaxisgraphicnode.selectAll("path").remove();
+		this._yaxisgraphicnode.selectAll("text").remove();
 		this._appendXaxis(this._xaxisgraphicnode);
 		this._appendYaxis(this._yaxisgraphicnode);
 	},
@@ -447,6 +451,32 @@ L.Control.Elevation = L.Control.extend({
 			.attr("d", this._area);
 		this._updateAxis();
 		return;
+	},
+
+	/*
+	 * Reset data
+	 */
+	_clearData: function() {
+		this._data = null;
+		this._dist = null;
+		this._maxElevation = null;
+	},
+
+	/*
+	 * Reset data and display
+	 */
+	clear: function() {
+
+		this._clearData();
+
+		// workaround for 'Error: Problem parsing d=""' in Webkit when empty data
+		// https://groups.google.com/d/msg/d3-js/7rFxpXKXFhI/HzIO_NPeDuMJ
+		//this._areapath.datum(this._data).attr("d", this._area);
+		this._areapath.attr("d", "M0 0");
+
+		this._x.domain([0,1]);
+		this._y.domain([0,1]);
+		this._updateAxis();
 	}
 
 });

@@ -53,3 +53,7 @@ g.on("addline",function(e){
 });
 g.addTo(map);
 ```
+```javascript
+// reset data and display
+el.clear();
+```
