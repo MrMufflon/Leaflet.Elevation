@@ -24,8 +24,6 @@ L.Control.Elevation = L.Control.extend({
 
 	onRemove: function(map) {
 		this._container = null;
-		this._data = null;
-		this._dist = null;
 	},
 
 	onAdd: function(map) {
@@ -111,6 +109,10 @@ L.Control.Elevation = L.Control.extend({
 		this._focuslabelY = focusG.append("svg:text")
 			.style("pointer-events", "none")
 			.attr("class", "mouse-focus-label-y");
+
+		if (this._data) {
+			this._applyData();
+		}
 
 		return container;
 	},
@@ -435,9 +437,13 @@ L.Control.Elevation = L.Control.extend({
 	 * update the axis domain and data
 	 */
 	addData: function(d) {
-
 		this._addData(d);
+		if (this._container) {
+			this._applyData();
+		}
+	},
 
+	_applyData: function() {
 		var xdomain = d3.extent(this._data, function(d) {
 			return d.dist;
 		});
@@ -450,7 +456,6 @@ L.Control.Elevation = L.Control.extend({
 		this._areapath.datum(this._data)
 			.attr("d", this._area);
 		this._updateAxis();
-		return;
 	},
 
 	/*
@@ -477,7 +482,7 @@ L.Control.Elevation = L.Control.extend({
 		this._x.domain([0,1]);
 		this._y.domain([0,1]);
 		this._updateAxis();
-	}
+	},
 
 });
 
