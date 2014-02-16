@@ -471,8 +471,11 @@ L.Control.Elevation = L.Control.extend({
 	 * Reset data and display
 	 */
 	clear: function() {
-
 		this._clearData();
+
+		if (!this._areapath) {
+			return;
+		}
 
 		// workaround for 'Error: Problem parsing d=""' in Webkit when empty data
 		// https://groups.google.com/d/msg/d3-js/7rFxpXKXFhI/HzIO_NPeDuMJ
