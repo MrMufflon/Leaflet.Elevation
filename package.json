@@ -1,38 +1,38 @@
 {
-  "name": "Leaflet.Elevation",
-  "version": "0.0.1",
-  "description": "A Leaflet plugin to view GeoJSON height profiles",
-  "devDependencies": {
-    "grunt": "~0.4.1",
-    "grunt-contrib-uglify": "~0.2.4",
-    "grunt-contrib-concat": "~0.3.0",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-cssmin": "~0.6.2",
-    "grunt-contrib-jasmine": "~0.5.2",
-    "jasmine": "~1.3.1",
-    "grunt-contrib-connect": "~0.5.0",
-    "grunt-contrib-jshint": "~0.7.0",
-    "grunt-contrib-less": "~0.8.1",
-    "grunt-svg2png": "~0.2.1"
-  },
-  "dependencies": {
-    "leaflet": "~0.6",
-    "d3": "~3.1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/MrMufflon/Leaflet.Elevation.git"
-  },
-  "keywords": [
-    "gis",
-    "heightprofile",
-    "leaflet",
-    "map",
-    "sdi"
-  ],
-  "author": "Felix Bache",
-  "readmeFilename": "README.md",
-  "bugs": {
-    "url": "https://github.com/MrMufflon/Leaflet.Elevation/issues"
-  }
+    "name": "Leaflet.Elevation",
+    "version": "0.0.1",
+    "description": "A Leaflet plugin to view GeoJSON height profiles",
+    "devDependencies": {
+        "grunt": "~0.4.1",
+        "grunt-contrib-uglify": "~0.2.4",
+        "grunt-contrib-concat": "~0.3.0",
+        "grunt-contrib-clean": "~0.5.0",
+        "grunt-contrib-cssmin": "~0.6.2",
+        "grunt-contrib-jasmine": "~0.5.2",
+        "jasmine": "~1.3.1",
+        "grunt-contrib-connect": "~0.5.0",
+        "grunt-contrib-jshint": "~0.7.0",
+        "grunt-contrib-less": "~0.8.1",
+        "grunt-svg2png": "~0.2.1"
+    },
+    "dependencies": {
+        "leaflet": "~0.6",
+        "d3": "~3.1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/MrMufflon/Leaflet.Elevation.git"
+    },
+    "keywords": [
+        "gis",
+        "heightprofile",
+        "leaflet",
+        "map",
+        "sdi"
+    ],
+    "author": "Felix Bache",
+    "readmeFilename": "README.md",
+    "bugs": {
+        "url": "https://github.com/MrMufflon/Leaflet.Elevation/issues"
+    }
 }
