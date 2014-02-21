@@ -7,4 +7,5 @@ npm install grunt-contrib-jshint --save-dev
 npm install grunt-contrib-less --save-dev
 npm install grunt-contrib-jasmine --save-dev
 npm install grunt-contrib-connect --save-dev
+npm install grunt-svg2png --save-dev
 
