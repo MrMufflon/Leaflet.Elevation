@@ -1,6 +1,6 @@
 {
     "name": "Leaflet.Elevation",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "A Leaflet plugin to view GeoJSON height profiles",
     "devDependencies": {
         "grunt": "~0.4.1",
@@ -26,6 +26,7 @@
     "keywords": [
         "gis",
         "heightprofile",
+        "elevation",
         "leaflet",
         "map",
         "sdi"

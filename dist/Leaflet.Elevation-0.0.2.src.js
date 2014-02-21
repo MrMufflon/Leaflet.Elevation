@@ -24,6 +24,8 @@ L.Control.Elevation = L.Control.extend({
 
     onRemove: function(map) {
         this._container = null;
+        this._data = null;
+        this._dist = null;
     },
 
     onAdd: function(map) {
@@ -31,39 +33,42 @@ L.Control.Elevation = L.Control.extend({
 
         var opts = this.options;
         var margin = opts.margins;
-        opts.xTicks = opts.xTicks || Math.round(this._width() / 75);
-        opts.yTicks = opts.yTicks || Math.round(this._height() / 30);
+        opts.width = opts.width - margin.left - margin.right;
+        opts.height = opts.height - margin.top - margin.bottom;
+        opts.xTicks = opts.xTicks || Math.round(opts.width / 75);
+        opts.yTicks = opts.yTicks || Math.round(opts.height / 30);
         opts.hoverNumber.formatter = opts.hoverNumber.formatter || this._formatter;
 
         //append theme name on body
         d3.select("body").classed(opts.theme, true);
 
         var x = this._x = d3.scale.linear()
-            .range([0, this._width()]);
+            .range([0, opts.width]);
 
         var y = this._y = d3.scale.linear()
-            .range([this._height(), 0]);
+            .range([opts.height, 0]);
 
         var area = this._area = d3.svg.area()
             .interpolate(opts.interpolation)
             .x(function(d) {
                 return x(d.dist);
             })
-            .y0(this._height())
+            .y0(opts.height)
             .y1(function(d) {
                 return y(d.altitude);
             });
 
         var container = this._container = L.DomUtil.create("div", "elevation");
-        
+
         this._initToggle();
 
+        var complWidth = opts.width + margin.left + margin.right;
         var cont = d3.select(container);
-        cont.attr("width", opts.width);
+        cont.attr("width", complWidth);
         var svg = cont.append("svg");
-        svg.attr("width", opts.width)
+        svg.attr("width", complWidth)
             .attr("class", "background")
-            .attr("height", opts.height)
+            .attr("height", opts.height + margin.top + margin.bottom)
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -73,7 +78,7 @@ L.Control.Elevation = L.Control.extend({
                 return d3.mouse(svg.select("g"))[0];
             })
             .y(function(d) {
-                return this._height();
+                return opts.height;
             });
 
         var g = d3.select(this._container).select("svg").select("g");
@@ -82,8 +87,8 @@ L.Control.Elevation = L.Control.extend({
             .attr("class", "area");
 
         var background = this._background = g.append("rect")
-            .attr("width", this._width())
-            .attr("height", this._height())
+            .attr("width", opts.width)
+            .attr("height", opts.height)
             .style("fill", "none")
             .style("stroke", "none")
             .style("pointer-events", "all");
@@ -123,10 +128,6 @@ L.Control.Elevation = L.Control.extend({
         this._focuslabelY = focusG.append("svg:text")
             .style("pointer-events", "none")
             .attr("class", "mouse-focus-label-y");
-
-        if (this._data) {
-            this._applyData();
-        }
 
         return container;
     },
@@ -280,16 +281,6 @@ L.Control.Elevation = L.Control.extend({
         L.DomUtil.addClass(this._container, 'elevation-collapsed');
     },
 
-    _width: function () {
-        var opts = this.options;
-        return opts.width - opts.margins.left - opts.margins.right;
-    },
-
-    _height: function () {
-        var opts = this.options;
-        return opts.height - opts.margins.top - opts.margins.bottom;
-    },
-
     /*
      * Fromatting funciton using the given decimals and seperator
      */
@@ -325,13 +316,13 @@ L.Control.Elevation = L.Control.extend({
 
     _appendXaxis: function(x) {
         x.attr("class", "x axis")
-            .attr("transform", "translate(0," + this._height() + ")")
+            .attr("transform", "translate(0," + this.options.height + ")")
             .call(d3.svg.axis()
                 .scale(this._x)
                 .ticks(this.options.xTicks)
                 .orient("bottom"))
             .append("text")
-            .attr("x", this._width() + 20)
+            .attr("x", this.options.width + 20)
             .attr("y", 15)
             .style("text-anchor", "end")
             .text("km");
@@ -381,7 +372,7 @@ L.Control.Elevation = L.Control.extend({
         this._mousefocus.attr('x1', coords[0])
             .attr('y1', 0)
             .attr('x2', coords[0])
-            .attr('y2', this._height())
+            .attr('y2', opts.height)
             .classed('hidden', false);
         var bisect = d3.bisector(function(d) {
             return d.dist;
@@ -397,7 +388,7 @@ L.Control.Elevation = L.Control.extend({
 
         this._focuslabelX.attr("x", coords[0])
             .text(numY + " m");
-        this._focuslabelY.attr("y", this._height() - 5)
+        this._focuslabelY.attr("y", opts.height - 5)
             .attr("x", coords[0])
             .text(numX + " km");
 
@@ -431,7 +422,7 @@ L.Control.Elevation = L.Control.extend({
 
             }
 
-            var normalizedAlt = this._height() / this._maxElevation * alt;
+            var normalizedAlt = this.options.height / this._maxElevation * alt;
             var normalizedY = layerpoint.y - normalizedAlt;
             this._mouseHeightFocus.attr("x1", layerpoint.x)
                 .attr("x2", layerpoint.x)
@@ -557,13 +548,9 @@ L.Control.Elevation = L.Control.extend({
      * update the axis domain and data
      */
     addData: function(d) {
-        this._addData(d);
-        if (this._container) {
-            this._applyData();
-        }
-    },
 
-    _applyData: function() {
+        this._addData(d);
+
         var xdomain = d3.extent(this._data, function(d) {
             return d.dist;
         });
@@ -576,6 +563,7 @@ L.Control.Elevation = L.Control.extend({
         this._areapath.datum(this._data)
             .attr("d", this._area);
         this._updateAxis();
+        return;
     },
 
     /*
@@ -593,10 +581,6 @@ L.Control.Elevation = L.Control.extend({
     clear: function() {
 
         this._clearData();
-
-        if (!this._areapath) {
-            return;
-        }
 
         // workaround for 'Error: Problem parsing d=""' in Webkit when empty data
         // https://groups.google.com/d/msg/d3-js/7rFxpXKXFhI/HzIO_NPeDuMJ
