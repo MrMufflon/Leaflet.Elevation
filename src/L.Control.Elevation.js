@@ -161,7 +161,7 @@ L.Control.Elevation = L.Control.extend({
 
             this._dragRectangle = this._dragRectangleG.append("rect")
                 .attr("width", x2 - x1)
-                .attr("height", this.options.height)
+                .attr("height", this._height())
                 .attr("x", x1)
                 .attr('class', 'mouse-drag')
                 .style("pointer-events", "none");
