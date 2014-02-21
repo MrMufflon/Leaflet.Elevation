@@ -182,9 +182,7 @@ L.Control.Elevation = L.Control.extend({
 
             this._hidePositionMarker();
 
-            var bounds = L.latLngBounds(this._data[0].latlng, this._data[0].latlng);
-            bounds.extend(this._data[this._data.length - 1].latlng);
-            this._map.fitBounds(bounds);
+            this._fitSection(0, this._data.length - 1);
 
         }
 
@@ -204,9 +202,7 @@ L.Control.Elevation = L.Control.extend({
         var item1 = this._findItemForX(this._dragStartCoords[0]),
             item2 = this._findItemForX(this._dragCurrentCoords[0]);
 
-        var bounds = L.latLngBounds(item1.latlng, item1.latlng);
-        bounds.extend(item2.latlng);
-        this._map.fitBounds(bounds);
+        this._fitSection(item1, item2);
 
         this._dragStartCoords = null;
         this._gotDragged = false;
@@ -225,9 +221,23 @@ L.Control.Elevation = L.Control.extend({
         var bisect = d3.bisector(function(d) {
             return d.dist;
         }).left;
-        var xinvert = this._x.invert(x),
-            item = bisect(this._data, xinvert);
-        return this._data[item];
+        var xinvert = this._x.invert(x);
+        return bisect(this._data, xinvert);
+    },
+
+    /** Make the map fit the route section between given indexes. */
+    _fitSection: function (index1, index2) {
+
+        var start = Math.min(index1, index2),
+            end = Math.max(index1, index2);
+
+        var bounds = L.latLngBounds(this._data[end]);
+        this._data.slice(start, end).forEach(function (d) {
+          bounds.extend(d.latlng);
+        });
+
+        this._map.fitBounds(bounds);
+
     },
 
     _initToggle: function() {
