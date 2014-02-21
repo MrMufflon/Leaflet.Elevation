@@ -12,13 +12,13 @@
 	   } 
 	</style>
 	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
-	<!--[if lte IE 8]><link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.ie.css" /><![endif]-->
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+	<!--[if lte IE 8]><link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.ie.css" /><![endif]-->
 
-	<link rel="stylesheet" href="../dist/Leaflet.Elevation-0.0.1.css" />
+	<link rel="stylesheet" href="./lib/elevation/Leaflet.Elevation-0.0.2.css" />
 
-	<script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
-	<script type="text/javascript" src="../dist/Leaflet.Elevation-0.0.1.min.js"></script>
+	<script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+	<script type="text/javascript" src="./lib/elevation/Leaflet.Elevation-0.0.2.min.js"></script>
 </head>
 <body>
 
@@ -28,7 +28,7 @@
 		var map = new L.Map('map');
 
 		var url = 'http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg',
-			attr ='Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data {attribution.OpenStreetMap}',
+			attr ='Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 			service = new L.TileLayer(url, {subdomains:"1234",attribution: attr});
 
 		var bounds = new L.LatLngBounds(new L.LatLng(-44.6, 170), new L.LatLng(-45, 168));
