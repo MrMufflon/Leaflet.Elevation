@@ -55,7 +55,7 @@ L.Control.Elevation = L.Control.extend({
             });
 
         var container = this._container = L.DomUtil.create("div", "elevation");
-        
+
         this._initToggle();
 
         var cont = d3.select(container);
