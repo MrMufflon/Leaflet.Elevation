@@ -144,6 +144,9 @@ L.Control.Elevation = L.Control.extend({
 
     },
 
+    /*
+     * Draws the currently dragged rectabgle over the chart.
+     */
     _drawDragRectangle: function() {
 
         if (!this._dragStartCoords) {
@@ -173,6 +176,9 @@ L.Control.Elevation = L.Control.extend({
 
     },
 
+    /*
+     * Removes the drag rectangle and zoms back to the total extent of the data.
+     */
     _resetDrag: function() {
 
         if (this._dragRectangleG) {
@@ -183,14 +189,15 @@ L.Control.Elevation = L.Control.extend({
 
             this._hidePositionMarker();
 
-            var bounds = L.latLngBounds(this._data[0].latlng, this._data[0].latlng);
-            bounds.extend(this._data[this._data.length - 1].latlng);
-            this._map.fitBounds(bounds);
+            this._map.fitBounds(this._fullExtent);
 
         }
 
     },
 
+    /*
+     * Handles end of dragg operations. Zooms the map to the selected items extent.
+     */
     _dragEndHandler: function() {
 
         if (!this._dragStartCoords || !this._gotDragged) {
@@ -222,6 +229,9 @@ L.Control.Elevation = L.Control.extend({
 
     },
 
+    /*
+     * Finds a data entry for a given x-coordinate of the diagram
+     */
     _findItemForX: function(x) {
         var bisect = d3.bisector(function(d) {
             return d.dist;
@@ -345,6 +355,9 @@ L.Control.Elevation = L.Control.extend({
 
     },
 
+    /*
+     * Hides the position-/heigth indication marker drawn onto the map
+     */
     _hidePositionMarker: function() {
 
         if (this._marker) {
@@ -362,6 +375,9 @@ L.Control.Elevation = L.Control.extend({
 
     },
 
+    /*
+     * Handles the moueseover the chart and displays distance and altitude level
+     */
     _mousemoveHandler: function(d, i, ctx) {
         if (!this._data || this._data.length === 0) {
             return;
@@ -378,11 +394,10 @@ L.Control.Elevation = L.Control.extend({
             return d.dist;
         }).left;
 
-        var xinvert = this._x.invert(coords[0]),
-            item = bisect(this._data, xinvert),
-            alt = this._data[item].altitude,
-            dist = this._data[item].dist,
-            ll = this._data[item].latlng,
+        var item = this._findItemForX(coords[0]),
+            alt = item.altitude,
+            dist = item.dist,
+            ll = item.latlng,
             numY = opts.hoverNumber.formatter(alt, opts.hoverNumber.decimalsY),
             numX = opts.hoverNumber.formatter(dist, opts.hoverNumber.decimalsX);
 
@@ -544,6 +559,25 @@ L.Control.Elevation = L.Control.extend({
     },
 
     /*
+     * Calculates the full extent of the data array
+     */
+    _calculateFullExtent: function(data) {
+
+        if (!data || data.length < 1) {
+            throw new Error("no data in parameters");
+        }
+
+        var ext = new L.latLngBounds(data[0].latlng, data[0].latlng);
+
+        data.forEach(function(item) {
+            ext.extend(item.latlng);
+        });
+
+        return ext;
+
+    },
+
+    /*
      * Add data to the diagram either from GPX or GeoJSON and
      * update the axis domain and data
      */
@@ -563,6 +597,9 @@ L.Control.Elevation = L.Control.extend({
         this._areapath.datum(this._data)
             .attr("d", this._area);
         this._updateAxis();
+
+        this._fullExtent = this._calculateFullExtent(this._data);
+
         return;
     },
 
