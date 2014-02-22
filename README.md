@@ -2,7 +2,7 @@ Leaflet.Elevation
 =================
 
 ### What is this?
-A [Leaflet](http://leafletjs.com) plugin to view an interactive height profile of polylines lines using [d3](http://d3js.org). Currently Chrome and Firefox are supported and tested.
+A [Leaflet](http://leafletjs.com) plugin to view an interactive height profile of polylines lines using [d3](http://d3js.org). Currently Chrome, Firefox and IE 10+ are supported and tested.
 This plugin is under development.
 
 Support for

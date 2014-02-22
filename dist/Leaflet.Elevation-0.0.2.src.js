@@ -220,6 +220,9 @@ L.Control.Elevation = L.Control.extend({
 
     _dragStartHandler: function() {
 
+        d3.event.preventDefault();
+        d3.event.stopPropagation();
+
         this._gotDragged = false;
 
         this._dragStartCoords = d3.mouse(this._background.node());
