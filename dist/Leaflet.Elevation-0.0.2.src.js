@@ -24,8 +24,6 @@ L.Control.Elevation = L.Control.extend({
 
     onRemove: function(map) {
         this._container = null;
-        this._data = null;
-        this._dist = null;
     },
 
     onAdd: function(map) {
@@ -33,27 +31,25 @@ L.Control.Elevation = L.Control.extend({
 
         var opts = this.options;
         var margin = opts.margins;
-        opts.width = opts.width - margin.left - margin.right;
-        opts.height = opts.height - margin.top - margin.bottom;
-        opts.xTicks = opts.xTicks || Math.round(opts.width / 75);
-        opts.yTicks = opts.yTicks || Math.round(opts.height / 30);
+        opts.xTicks = opts.xTicks || Math.round(this._width() / 75);
+        opts.yTicks = opts.yTicks || Math.round(this._height() / 30);
         opts.hoverNumber.formatter = opts.hoverNumber.formatter || this._formatter;
 
         //append theme name on body
         d3.select("body").classed(opts.theme, true);
 
         var x = this._x = d3.scale.linear()
-            .range([0, opts.width]);
+            .range([0, this._width()]);
 
         var y = this._y = d3.scale.linear()
-            .range([opts.height, 0]);
+            .range([this._height(), 0]);
 
         var area = this._area = d3.svg.area()
             .interpolate(opts.interpolation)
             .x(function(d) {
                 return x(d.dist);
             })
-            .y0(opts.height)
+            .y0(this._height())
             .y1(function(d) {
                 return y(d.altitude);
             });
@@ -62,13 +58,12 @@ L.Control.Elevation = L.Control.extend({
 
         this._initToggle();
 
-        var complWidth = opts.width + margin.left + margin.right;
         var cont = d3.select(container);
-        cont.attr("width", complWidth);
+        cont.attr("width", opts.width);
         var svg = cont.append("svg");
-        svg.attr("width", complWidth)
+        svg.attr("width", opts.width)
             .attr("class", "background")
-            .attr("height", opts.height + margin.top + margin.bottom)
+            .attr("height", opts.height)
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -78,7 +73,7 @@ L.Control.Elevation = L.Control.extend({
                 return d3.mouse(svg.select("g"))[0];
             })
             .y(function(d) {
-                return opts.height;
+                return this._height();
             });
 
         var g = d3.select(this._container).select("svg").select("g");
@@ -87,8 +82,8 @@ L.Control.Elevation = L.Control.extend({
             .attr("class", "area");
 
         var background = this._background = g.append("rect")
-            .attr("width", opts.width)
-            .attr("height", opts.height)
+            .attr("width", this._width())
+            .attr("height", this._height())
             .style("fill", "none")
             .style("stroke", "none")
             .style("pointer-events", "all");
@@ -129,6 +124,10 @@ L.Control.Elevation = L.Control.extend({
             .style("pointer-events", "none")
             .attr("class", "mouse-focus-label-y");
 
+        if (this._data) {
+            this._applyData();
+        }
+
         return container;
     },
 
@@ -165,7 +164,7 @@ L.Control.Elevation = L.Control.extend({
 
             this._dragRectangle = this._dragRectangleG.append("rect")
                 .attr("width", x2 - x1)
-                .attr("height", this.options.height)
+                .attr("height", this._height())
                 .attr("x", x1)
                 .attr('class', 'mouse-drag')
                 .style("pointer-events", "none");
@@ -212,9 +211,7 @@ L.Control.Elevation = L.Control.extend({
         var item1 = this._findItemForX(this._dragStartCoords[0]),
             item2 = this._findItemForX(this._dragCurrentCoords[0]);
 
-        var bounds = L.latLngBounds(item1.latlng, item1.latlng);
-        bounds.extend(item2.latlng);
-        this._map.fitBounds(bounds);
+        this._fitSection(item1, item2);
 
         this._dragStartCoords = null;
         this._gotDragged = false;
@@ -236,9 +233,20 @@ L.Control.Elevation = L.Control.extend({
         var bisect = d3.bisector(function(d) {
             return d.dist;
         }).left;
-        var xinvert = this._x.invert(x),
-            item = bisect(this._data, xinvert);
-        return this._data[item];
+        var xinvert = this._x.invert(x);
+        return bisect(this._data, xinvert);
+    },
+
+    /** Make the map fit the route section between given indexes. */
+    _fitSection: function(index1, index2) {
+
+        var start = Math.min(index1, index2),
+            end = Math.max(index1, index2);
+
+        var ext = this._calculateFullExtent(this._data.slice(start, end));
+
+        this._map.fitBounds(ext);
+
     },
 
     _initToggle: function() {
@@ -291,6 +299,16 @@ L.Control.Elevation = L.Control.extend({
         L.DomUtil.addClass(this._container, 'elevation-collapsed');
     },
 
+    _width: function() {
+        var opts = this.options;
+        return opts.width - opts.margins.left - opts.margins.right;
+    },
+
+    _height: function() {
+        var opts = this.options;
+        return opts.height - opts.margins.top - opts.margins.bottom;
+    },
+
     /*
      * Fromatting funciton using the given decimals and seperator
      */
@@ -326,13 +344,13 @@ L.Control.Elevation = L.Control.extend({
 
     _appendXaxis: function(x) {
         x.attr("class", "x axis")
-            .attr("transform", "translate(0," + this.options.height + ")")
+            .attr("transform", "translate(0," + this._height() + ")")
             .call(d3.svg.axis()
                 .scale(this._x)
                 .ticks(this.options.xTicks)
                 .orient("bottom"))
             .append("text")
-            .attr("x", this.options.width + 20)
+            .attr("x", this._width() + 20)
             .attr("y", 15)
             .style("text-anchor", "end")
             .text("km");
@@ -388,13 +406,13 @@ L.Control.Elevation = L.Control.extend({
         this._mousefocus.attr('x1', coords[0])
             .attr('y1', 0)
             .attr('x2', coords[0])
-            .attr('y2', opts.height)
+            .attr('y2', this._height())
             .classed('hidden', false);
         var bisect = d3.bisector(function(d) {
             return d.dist;
         }).left;
 
-        var item = this._findItemForX(coords[0]),
+        var item = this._data[this._findItemForX(coords[0])],
             alt = item.altitude,
             dist = item.dist,
             ll = item.latlng,
@@ -403,7 +421,7 @@ L.Control.Elevation = L.Control.extend({
 
         this._focuslabelX.attr("x", coords[0])
             .text(numY + " m");
-        this._focuslabelY.attr("y", opts.height - 5)
+        this._focuslabelY.attr("y", this._height() - 5)
             .attr("x", coords[0])
             .text(numX + " km");
 
@@ -437,7 +455,7 @@ L.Control.Elevation = L.Control.extend({
 
             }
 
-            var normalizedAlt = this.options.height / this._maxElevation * alt;
+            var normalizedAlt = this._height() / this._maxElevation * alt;
             var normalizedY = layerpoint.y - normalizedAlt;
             this._mouseHeightFocus.attr("x1", layerpoint.x)
                 .attr("x2", layerpoint.x)
@@ -582,9 +600,13 @@ L.Control.Elevation = L.Control.extend({
      * update the axis domain and data
      */
     addData: function(d) {
-
         this._addData(d);
+        if (this._container) {
+            this._applyData();
+        }
+    },
 
+    _applyData: function() {
         var xdomain = d3.extent(this._data, function(d) {
             return d.dist;
         });
@@ -599,8 +621,6 @@ L.Control.Elevation = L.Control.extend({
         this._updateAxis();
 
         this._fullExtent = this._calculateFullExtent(this._data);
-
-        return;
     },
 
     /*
@@ -618,6 +638,10 @@ L.Control.Elevation = L.Control.extend({
     clear: function() {
 
         this._clearData();
+
+        if (!this._areapath) {
+            return;
+        }
 
         // workaround for 'Error: Problem parsing d=""' in Webkit when empty data
         // https://groups.google.com/d/msg/d3-js/7rFxpXKXFhI/HzIO_NPeDuMJ
