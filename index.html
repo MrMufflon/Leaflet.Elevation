@@ -1,65 +1,104 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <title>Leaflet.Elevation by MrMufflon</title>
 
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-
-    <title>Leaflet.Elevation by MrMufflon</title>
   </head>
-
   <body>
-    <header>
-      <div class="inner">
+    <div class="wrapper">
+      <header>
         <h1>Leaflet.Elevation</h1>
-        <h2>Leaflet plugin to view interactive height profiles of polylines</h2>
-        <a href="https://github.com/MrMufflon/Leaflet.Elevation" class="button"><small>View project on</small>GitHub</a>
-      </div>
-    </header>
+        <p>Leaflet plugin to view height profile of GeoJSON- and GPX polylines using d3</p>
 
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <h1>
+        <p class="view"><a href="https://github.com/MrMufflon/Leaflet.Elevation">View the Project on GitHub <small>MrMufflon/Leaflet.Elevation</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/MrMufflon/Leaflet.Elevation/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/MrMufflon/Leaflet.Elevation/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/MrMufflon/Leaflet.Elevation">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
 <a name="leafletelevation" class="anchor" href="#leafletelevation"><span class="octicon octicon-link"></span></a>Leaflet.Elevation</h1>
 
 <h3>
 <a name="what-is-this" class="anchor" href="#what-is-this"><span class="octicon octicon-link"></span></a>What is this?</h3>
 
-<p>A <a href="http://leafletjs.com">Leaflet</a> plugin to view interactive height profiles of polylines lines using <a href="http://d3js.org">d3</a>.</p>
+<p>A <a href="http://leafletjs.com">Leaflet</a> plugin to view an interactive height profile of polylines lines using <a href="http://d3js.org">d3</a>. Currently Chrome, Firefox and IE 10+ are supported and tested.
+This plugin is under development.</p>
 
-<p>Supporting GeoJSON (<a href="./example/example.html">demo</a>) and GPX (<a href="./example/example_gpx.html">demo</a>) using <a href="https://github.com/mpetazzoni/leaflet-gpx">leaflet-gpx</a></p>
+<p>Support for</p>
 
-<p><em>Tested with Leaflet 0.5</em></p>
+<ul>
+<li>GeoJSON <a href="http://mrmufflon.github.io/Leaflet.Elevation/example/example.html">Demo</a>
+</li>
+<li>GPX-files using <a href="https://github.com/mpetazzoni/leaflet-gpx">leaflet-gpx</a> <a href="http://mrmufflon.github.io/Leaflet.Elevation/example/example_gpx.html">Demo</a>
+</li>
+</ul><p><em>Tested with Leaflet 0.4+</em></p>
 
+<p><img src="http://mrmufflon.github.io/Leaflet.Elevation/images/screen.jpg"></p>
 
-        </section>
+<h3>
+<a name="how-to-use" class="anchor" href="#how-to-use"><span class="octicon octicon-link"></span></a>How to use</h3>
 
-        <aside id="sidebar">
-          <a href="https://github.com/MrMufflon/Leaflet.Elevation/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/MrMufflon/Leaflet.Elevation/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
+<div class="highlight highlight-javascript"><pre><span class="c1">//all used options are the default values</span>
+<span class="kd">var</span> <span class="nx">el</span> <span class="o">=</span> <span class="nx">L</span><span class="p">.</span><span class="nx">control</span><span class="p">.</span><span class="nx">elevation</span><span class="p">({</span>
+    <span class="nx">position</span><span class="o">:</span> <span class="s2">"topright"</span><span class="p">,</span>
+    <span class="nx">theme</span><span class="o">:</span> <span class="s2">"steelblue-theme"</span><span class="p">,</span> <span class="c1">//default: lime-theme</span>
+    <span class="nx">width</span><span class="o">:</span> <span class="mi">600</span><span class="p">,</span>
+    <span class="nx">height</span><span class="o">:</span> <span class="mi">125</span><span class="p">,</span>
+    <span class="nx">margins</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">top</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="nx">right</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="nx">bottom</span><span class="o">:</span> <span class="mi">30</span><span class="p">,</span>
+        <span class="nx">left</span><span class="o">:</span> <span class="mi">50</span>
+    <span class="p">},</span>
+    <span class="nx">useHeightIndicator</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="c1">//if false a marker is drawn at map position</span>
+    <span class="nx">interpolation</span><span class="o">:</span> <span class="s2">"linear"</span><span class="p">,</span> <span class="c1">//see https://github.com/mbostock/d3/wiki/SVG-Shapes#wiki-area_interpolate</span>
+    <span class="nx">hoverNumber</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">decimalsX</span><span class="o">:</span> <span class="mi">3</span><span class="p">,</span> <span class="c1">//decimals on distance (always in km)</span>
+        <span class="nx">decimalsY</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="c1">//deciamls on height (always in m)</span>
+        <span class="nx">formatter</span><span class="o">:</span> <span class="kc">undefined</span> <span class="c1">//custom formatter function may be injected</span>
+    <span class="p">},</span>
+    <span class="nx">xTicks</span><span class="o">:</span> <span class="kc">undefined</span><span class="p">,</span> <span class="c1">//number of ticks in x axis, calculated by default according to width</span>
+    <span class="nx">yTicks</span><span class="o">:</span> <span class="kc">undefined</span><span class="p">,</span> <span class="c1">//number of ticks on y axis, calculated by default according to height</span>
+    <span class="nx">collapsed</span><span class="o">:</span> <span class="kc">false</span>    <span class="c1">//collapsed mode, show chart on click or mouseover</span>
+<span class="p">});</span>
+<span class="nx">el</span><span class="p">.</span><span class="nx">addTo</span><span class="p">(</span><span class="nx">map</span><span class="p">);</span>
+<span class="nx">L</span><span class="p">.</span><span class="nx">geoJson</span><span class="p">(</span><span class="nx">geojson</span><span class="p">,{</span>
+    <span class="nx">onEachFeature</span><span class="o">:</span> <span class="nx">el</span><span class="p">.</span><span class="nx">addData</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">el</span><span class="p">)</span> <span class="c1">//working on a better solution</span>
+<span class="p">}).</span><span class="nx">addTo</span><span class="p">(</span><span class="nx">map</span><span class="p">);</span>
+</pre></div>
 
-          <p class="repo-owner"><a href="https://github.com/MrMufflon/Leaflet.Elevation"></a> is maintained by <a href="https://github.com/MrMufflon">MrMufflon</a>.</p>
+<div class="highlight highlight-javascript"><pre><span class="kd">var</span> <span class="nx">el</span> <span class="o">=</span> <span class="nx">L</span><span class="p">.</span><span class="nx">control</span><span class="p">.</span><span class="nx">elevation</span><span class="p">();</span>
+<span class="nx">el</span><span class="p">.</span><span class="nx">addTo</span><span class="p">(</span><span class="nx">map</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">g</span><span class="o">=</span><span class="k">new</span> <span class="nx">L</span><span class="p">.</span><span class="nx">GPX</span><span class="p">(</span><span class="s2">"./mytrack.gpx"</span><span class="p">,</span> <span class="p">{</span><span class="nx">async</span><span class="o">:</span> <span class="kc">true</span><span class="p">});</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"addline"</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
+    <span class="nx">el</span><span class="p">.</span><span class="nx">addData</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">line</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">addTo</span><span class="p">(</span><span class="nx">map</span><span class="p">);</span>
+</pre></div>
 
-          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
-      </div>
+<div class="highlight highlight-javascript"><pre><span class="c1">// reset data and display</span>
+<span class="nx">el</span><span class="p">.</span><span class="nx">clear</span><span class="p">();</span>
+</pre></div>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/MrMufflon">MrMufflon</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
     </div>
-
-  
+    <script src="javascripts/scale.fix.js"></script>
+    
   </body>
 </html>
