@@ -31,7 +31,12 @@
         <h1>
 <a name="leafletelevation" class="anchor" href="#leafletelevation"><span class="octicon octicon-link"></span></a>Leaflet.Elevation</h1>
 
-<h3>
+<ol>
+<li><a href="https://github.com/MrMufflon/Leaflet.Elevation#what-is-this">What is this?</a></li>
+<li><a href="https://github.com/MrMufflon/Leaflet.Elevation#how-to-use">How to use</a></li>
+<li><a href="https://github.com/MrMufflon/Leaflet.Elevation#setup-development-environment">Setup development environment</a></li>
+<li><a href="https://github.com/MrMufflon/Leaflet.Elevation#customizing-styles">Customizing styles</a></li>
+</ol><h3>
 <a name="what-is-this" class="anchor" href="#what-is-this"><span class="octicon octicon-link"></span></a>What is this?</h3>
 
 <p>A <a href="http://leafletjs.com">Leaflet</a> plugin to view an interactive height profile of polylines lines using <a href="http://d3js.org">d3</a>. Currently Chrome, Firefox and IE 10+ are supported and tested.
@@ -92,6 +97,45 @@ This plugin is under development.</p>
 <div class="highlight highlight-javascript"><pre><span class="c1">// reset data and display</span>
 <span class="nx">el</span><span class="p">.</span><span class="nx">clear</span><span class="p">();</span>
 </pre></div>
+
+<h3>
+<a name="setup-development-environment" class="anchor" href="#setup-development-environment"><span class="octicon octicon-link"></span></a>Setup development environment</h3>
+
+<p>If you are new to grunt please refer to the <a href="http://gruntjs.com/getting-started">quick start</a> guide.</p>
+
+<p>Install npm dependencies with</p>
+
+<pre><code>npm install
+</code></pre>
+
+<p>Run jasmine tests with</p>
+
+<pre><code>grunt test
+</code></pre>
+
+<p>And compile with</p>
+
+<pre><code>grunt
+</code></pre>
+
+<h3>
+<a name="customizing-styles" class="anchor" href="#customizing-styles"><span class="octicon octicon-link"></span></a>Customizing styles</h3>
+
+<p>To generate different themes <a href="http://lesscss.org/">lessCSS</a> is used. Create your own theme in a new .less file in src/css/themes. Usable variables are</p>
+
+<div class="highlight highlight-css"><pre><span class="k">@theme</span> <span class="o">:</span> <span class="nt">lime-theme</span><span class="p">;</span>
+<span class="k">@base-color</span> <span class="o">:</span> <span class="nf">#9CC222</span><span class="p">;</span> <span class="o">//</span><span class="nt">basecolor</span> <span class="nt">to</span> <span class="nt">derive</span> <span class="nt">other</span> <span class="nt">colors</span> <span class="nt">from</span>
+<span class="k">@highlight-color</span> <span class="o">:</span> <span class="nf">#637E0B</span><span class="p">;</span> <span class="o">//</span><span class="nt">basecolor</span> <span class="nt">to</span> <span class="nt">derive</span> <span class="nt">selections</span> <span class="nt">from</span>
+<span class="k">@background</span> <span class="o">:</span> <span class="nt">fade</span><span class="o">(</span><span class="k">@base-color</span><span class="o">,</span><span class="nt">20</span><span class="o">%)</span><span class="p">;</span> <span class="o">//</span><span class="nt">background-color</span> 
+<span class="k">@drag-color</span> <span class="o">:</span> <span class="nt">fade</span><span class="o">(</span><span class="k">@highlight-color</span><span class="o">,</span><span class="nt">40</span><span class="o">%)</span><span class="p">;</span> <span class="o">//</span><span class="nt">drag</span> <span class="nt">selection</span> <span class="nt">color</span>
+<span class="k">@axis-color</span> <span class="o">:</span> <span class="nt">darken</span><span class="o">(</span><span class="k">@base-color</span><span class="o">,</span><span class="nt">20</span><span class="o">%)</span><span class="p">;</span> <span class="o">//</span><span class="nt">color</span> <span class="nt">of</span> <span class="nt">axes</span>
+<span class="k">@stroke-color</span> <span class="o">:</span> <span class="nt">darken</span><span class="o">(</span><span class="k">@base-color</span><span class="o">,</span><span class="nt">40</span><span class="o">%)</span><span class="p">;</span> <span class="o">//</span><span class="nt">color</span> <span class="nt">for</span> <span class="nt">mouse</span> <span class="nt">highlight</span>
+<span class="k">@stroke-width-mouse-focus</span> <span class="o">:</span> <span class="nt">1</span><span class="p">;</span> <span class="o">//</span><span class="nt">stroke</span> <span class="nt">width</span> <span class="nt">for</span> <span class="nt">mouse</span> <span class="nt">highlight</span>
+<span class="k">@stroke-width-height-focus</span><span class="o">:</span> <span class="nt">2</span><span class="p">;</span> <span class="o">//</span><span class="nt">stroke</span> <span class="nt">width</span> <span class="nt">for</span> <span class="nt">height</span> <span class="nt">focus</span> <span class="nt">indicator</span>
+<span class="k">@stroke-width-axis</span> <span class="o">:</span> <span class="nt">2</span><span class="p">;</span> <span class="o">//</span><span class="nt">stroke</span> <span class="nt">width</span> <span class="nt">for</span> <span class="nt">axes</span><span class="p">;</span>
+</pre></div>
+
+<p>Add the theme file to the less- and cssmin task in the Gruntfile and you´re good to go.</p>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/MrMufflon">MrMufflon</a></p>
