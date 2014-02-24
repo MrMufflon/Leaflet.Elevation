@@ -123,4 +123,7 @@ module.exports = function(grunt) {
     // Default task(s).
     grunt.registerTask('default', ['clean', 'jshint', 'connect', 'jasmine', 'concat', 'uglify', 'less', 'cssmin', 'svg2png']);
 
+    grunt.registerTask('test', ['connect', 'jasmine']);
+
+
 };

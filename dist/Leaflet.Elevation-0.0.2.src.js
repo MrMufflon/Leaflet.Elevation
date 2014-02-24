@@ -502,7 +502,7 @@ L.Control.Elevation = L.Control.extend({
                 var s = new L.LatLng(coords[i][1], coords[i][0]);
                 var e = new L.LatLng(coords[i ? i - 1 : 0][1], coords[i ? i - 1 : 0][0]);
                 var newdist = s.distanceTo(e);
-                dist = dist + newdist / 1000;
+                dist = dist + Math.round(newdist / 1000 * 100000) / 100000;
                 ele = ele < coords[i][2] ? coords[i][2] : ele;
                 data.push({
                     dist: dist,
@@ -530,7 +530,7 @@ L.Control.Elevation = L.Control.extend({
                 var s = coords[i];
                 var e = coords[i ? i - 1 : 0];
                 var newdist = s.distanceTo(e);
-                dist = dist + newdist / 1000;
+                dist = dist + Math.round(newdist / 1000 * 100000) / 100000;
                 ele = ele < s.meta.ele ? s.meta.ele : ele;
                 data.push({
                     dist: dist,

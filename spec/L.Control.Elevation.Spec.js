@@ -33,7 +33,7 @@ describe('L.Control.Elevation', function() {
         expect(item.y).toEqual(-44.696476);
         expect(item.altitude).toEqual(296);
         expect(item.dist).toEqual(0);
-        expect(el._data[2].dist).toEqual(0.7613852871901096);
+        expect(el._data[2].dist).toEqual(0.76138);
     });
 });
 
@@ -70,7 +70,7 @@ describe('L.Control.Elevation', function() {
         expect(item.y).toEqual(-44.696476);
         expect(item.altitude).toEqual(296);
         expect(item.dist).toEqual(0);
-        expect(el._data[2].dist).toEqual(0.7613852871901096);
+        expect(el._data[2].dist).toEqual(0.76138);
         var item4 = el._data[4];
         expect(item4.x).toEqual(19.134602);
         expect(item4.y).toEqual(-44.134602);
@@ -79,32 +79,32 @@ describe('L.Control.Elevation', function() {
 });
 
 describe('L.Control.Elevation', function() {
+
     var el = new L.control.elevation();
-    it('adds GPX data correctly', function() {
-        window.baseUrl = window.baseUrl || ".";
-        runs(function() {
-            var g = new L.GPX(baseUrl + "/test.gpx", {
-                async: true
-            });
-            g.on("addline", function(e) {
-                el._addData(e.line);
-            });
+
+    window.baseUrl = window.baseUrl || ".";
+    beforeEach(function(done) {
+        var g = new L.GPX(baseUrl + "/test.gpx", {
+            async: true
         });
-
-        waitsFor(function() {
-            return el._data && el._data.length > 0;
-        }, "GPX not correctly loading", 3000);
-
-        runs(function() {
-            expect(el._data.length).toEqual(9);
-            var item1 = el._data[0];
-            expect(item1.y).toEqual(-45.842434);
-            expect(item1.x).toEqual(170.651075);
-            expect(item1.altitude).toEqual(-18);
-
-            var item3 = el._data[2];
-            expect(item3.y).toEqual(-45.842444);
+        g.on("addline", function(e) {
+            el._addData(e.line);
+            done();
         });
+    });
+
+    it('adds GPX data correctly', function(done) {
+
+
+        expect(el._data.length).toEqual(9);
+        var item1 = el._data[0];
+        expect(item1.y).toEqual(-45.842434);
+        expect(item1.x).toEqual(170.651075);
+        expect(item1.altitude).toEqual(-18);
+
+        var item3 = el._data[2];
+        expect(item3.y).toEqual(-45.842444);
+        done();
 
     });
 });
@@ -128,14 +128,11 @@ describe('L.Control.Elevation', function() {
                 "properties": null
             }]
         };
-        var data = el._data;
-        var dist = el._dist;
-        var maxElevation = el._maxElevation;
         el._addData(geojson);
         el._clearData();
-        expect(el._data).toEqual(data);
-        expect(el._dist).toEqual(dist);
-        expect(el._maxElevation).toEqual(maxElevation);
+        expect(el._data).toEqual(null);
+        expect(el._dist).toEqual(null);
+        expect(el._maxElevation).toEqual(null);
     });
 });
 

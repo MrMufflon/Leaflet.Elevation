@@ -1,6 +1,11 @@
 Leaflet.Elevation
 =================
 
+1. [What is this?](https://github.com/MrMufflon/Leaflet.Elevation#what-is-this)
+2. [How to use](https://github.com/MrMufflon/Leaflet.Elevation#how-to-use)
+3. [Setup development environment](https://github.com/MrMufflon/Leaflet.Elevation#setup-development-environment)
+4. [Customizing styles](https://github.com/MrMufflon/Leaflet.Elevation#customizing-styles)
+
 ### What is this?
 A [Leaflet](http://leafletjs.com) plugin to view an interactive height profile of polylines lines using [d3](http://d3js.org). Currently Chrome, Firefox and IE 10+ are supported and tested.
 This plugin is under development.
@@ -57,3 +62,37 @@ g.addTo(map);
 // reset data and display
 el.clear();
 ```
+
+### Setup development environment
+If you are new to grunt please refer to the [quick start](http://gruntjs.com/getting-started) guide.
+
+Install npm dependencies with
+```
+npm install
+```
+
+Run jasmine tests with
+```
+grunt test
+```
+
+And compile with
+```
+grunt
+```
+
+### Customizing styles
+To generate different themes [lessCSS](http://lesscss.org/) is used. Create your own theme in a new .less file in src/css/themes. Usable variables are
+```css
+@theme : lime-theme;
+@base-color : #9CC222; //basecolor to derive other colors from
+@highlight-color : #637E0B; //basecolor to derive selections from
+@background : fade(@base-color,20%); //background-color 
+@drag-color : fade(@highlight-color,40%); //drag selection color
+@axis-color : darken(@base-color,20%); //color of axes
+@stroke-color : darken(@base-color,40%); //color for mouse highlight
+@stroke-width-mouse-focus : 1; //stroke width for mouse highlight
+@stroke-width-height-focus: 2; //stroke width for height focus indicator
+@stroke-width-axis : 2; //stroke width for axes;
+```
+Add the theme file to the less- and cssmin task in the Gruntfile and you´re good to go.
