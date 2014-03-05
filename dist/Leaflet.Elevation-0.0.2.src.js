@@ -8,7 +8,7 @@ L.Control.Elevation = L.Control.extend({
             top: 10,
             right: 20,
             bottom: 30,
-            left: 50
+            left: 60
         },
         useHeightIndicator: true,
         interpolation: "linear",
@@ -19,7 +19,10 @@ L.Control.Elevation = L.Control.extend({
         },
         xTicks: undefined,
         yTicks: undefined,
-        collapsed: false
+        collapsed: false,
+        yAxisMin: undefined,
+        yAxisMax: undefined,
+        forceAxisBounds: false
     },
 
     onRemove: function(map) {
@@ -340,7 +343,8 @@ L.Control.Elevation = L.Control.extend({
                 .ticks(this.options.yTicks)
                 .orient("left"))
             .append("text")
-            .attr("x", -10)
+            .attr("x", -45)
+            .attr("y", 3)
             .style("text-anchor", "end")
             .text("m");
     },
@@ -616,6 +620,14 @@ L.Control.Elevation = L.Control.extend({
         var ydomain = d3.extent(this._data, function(d) {
             return d.altitude;
         });
+        var opts = this.options;
+
+        if (opts.yAxisMin !== undefined && (opts.yAxisMin < ydomain[0] || opts.forceAxisBounds)) {
+            ydomain[0] = opts.yAxisMin;
+        }
+        if (opts.yAxisMax !== undefined && (opts.yAxisMax > ydomain[1] || opts.forceAxisBounds)) {
+            ydomain[1] = opts.yAxisMax;
+        }
 
         this._x.domain(xdomain);
         this._y.domain(ydomain);
