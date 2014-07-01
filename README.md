@@ -7,10 +7,14 @@ Leaflet.Elevation
 4. [Customizing styles](https://github.com/MrMufflon/Leaflet.Elevation#customizing-styles)
 
 ### What is this?
-A [Leaflet](http://leafletjs.com) plugin to view an interactive height profile of polylines lines using [d3](http://d3js.org). Currently Chrome, Firefox and IE 10+ are supported and tested.
-This plugin is under development.
+A [Leaflet](http://leafletjs.com) plugin to view an interactive height profile of polylines lines using [d3](http://d3js.org). This plugin is under development.
 
-Support for
+Supported and tested Browsers:
+- Chrome
+- Firefox
+- IE 10+
+
+Supported data:
 - GeoJSON [Demo](http://mrmufflon.github.io/Leaflet.Elevation/example/example.html)
 - GPX-files using [leaflet-gpx](https://github.com/mpetazzoni/leaflet-gpx) [Demo](http://mrmufflon.github.io/Leaflet.Elevation/example/example_gpx.html)
 
@@ -20,6 +24,7 @@ Support for
 
 
 ### How to use
+Altitude information for each point is necessary in the given data.
 ```javascript
 //all used options are the default values
 var el = L.control.elevation({
