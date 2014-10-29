@@ -475,7 +475,7 @@ L.Control.Elevation = L.Control.extend({
 
             this._mouseHeightFocusLabel.attr("x", layerpoint.x)
                 .attr("y", normalizedY)
-                .text(alt + " m")
+                .text(numY + " m")
                 .style("visibility", "visible");
 
         } else {
