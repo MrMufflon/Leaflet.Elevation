@@ -24,9 +24,12 @@
     "bower_components",
     "test",
     "tests",
-    "./setup.sh"
+    "setup.sh",
+    "Gruntfile.js",
     "spec",
-    "src"
+    "src",
+    "dev",
+    "lib"
   ],
    "dependencies": {
     "leaflet-dist": "0.7.x"
