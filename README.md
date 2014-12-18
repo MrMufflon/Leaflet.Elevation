@@ -3,8 +3,9 @@ Leaflet.Elevation
 
 1. [What is this?](https://github.com/MrMufflon/Leaflet.Elevation#what-is-this)
 2. [How to use](https://github.com/MrMufflon/Leaflet.Elevation#how-to-use)
-3. [Setup development environment](https://github.com/MrMufflon/Leaflet.Elevation#setup-development-environment)
-4. [Customizing styles](https://github.com/MrMufflon/Leaflet.Elevation#customizing-styles)
+3. [Install](https://github.com/MrMufflon/Leaflet.Elevation#install-with-bower)
+4. [Setup development environment](https://github.com/MrMufflon/Leaflet.Elevation#setup-development-environment)
+5. [Customizing styles](https://github.com/MrMufflon/Leaflet.Elevation#customizing-styles)
 
 ### What is this?
 A [Leaflet](http://leafletjs.com) plugin to view an interactive height profile of polylines lines using [d3](http://d3js.org). This plugin is under development.
@@ -22,6 +23,9 @@ Supported data:
 
 <img src="http://mrmufflon.github.io/Leaflet.Elevation/images/screen.jpg"/>
 
+### Install with Bower
+
+`` bower install leaflet.elevation ``
 
 ### How to use
 Altitude information for each point is necessary in the given data.

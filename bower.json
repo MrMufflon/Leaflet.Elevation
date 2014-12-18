@@ -1,0 +1,37 @@
+{
+  "name": "Leaflet.Elevation",
+  "version": "0.0.1",
+  "homepage": "http://mrmufflon.github.io/Leaflet.Elevation/",
+  "authors": [
+    "MrMufflon"
+  ],
+  "description": "A Leaflet plugin to view height profile of GeoJSON- and GPX polylines using d3.",
+  "main": [
+    "dist/Leaflet.Elevation-0.0.2.min.js",
+    "dist/Leaflet.Elevation-0.0.2.css",
+	"dist/Leaflet.Elevation-0.0.2.src.js"
+    ],
+  "keywords": [
+    "Leaflet",
+    "Elevatio",
+    "map",
+    "d3"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "setup.sh",
+    "Gruntfile.js",
+    "spec",
+    "src",
+    "dev",
+    "lib"
+  ],
+   "dependencies": {
+    "leaflet-dist": "0.7.x"
+  }
+}
