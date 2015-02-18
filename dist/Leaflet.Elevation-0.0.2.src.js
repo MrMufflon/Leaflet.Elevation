@@ -50,7 +50,9 @@ L.Control.Elevation = L.Control.extend({
         var area = this._area = d3.svg.area()
             .interpolate(opts.interpolation)
             .x(function(d) {
-                return x(d.dist);
+                var xDiagCoord = x(d.dist);
+                d.xDiagCoord = xDiagCoord;
+                return xDiagCoord;
             })
             .y0(this._height())
             .y1(function(d) {
@@ -243,6 +245,19 @@ L.Control.Elevation = L.Control.extend({
         return bisect(this._data, xinvert);
     },
 
+    _findItemForLatLng: function(latlng) {
+        var result = null,
+            d = Infinity;
+        this._data.forEach(function(item) {
+            var dist = latlng.distanceTo(item.latlng);
+            if (dist < d) {
+                d = dist;
+                result = item;
+            }
+        });
+        return result;
+    },
+
     /** Make the map fit the route section between given indexes. */
     _fitSection: function(index1, index2) {
 
@@ -409,28 +424,15 @@ L.Control.Elevation = L.Control.extend({
         }
         var coords = d3.mouse(this._background.node());
         var opts = this.options;
-        this._focusG.style("visibility", "visible");
-        this._mousefocus.attr('x1', coords[0])
-            .attr('y1', 0)
-            .attr('x2', coords[0])
-            .attr('y2', this._height())
-            .classed('hidden', false);
-        var bisect = d3.bisector(function(d) {
-            return d.dist;
-        }).left;
-
+        
         var item = this._data[this._findItemForX(coords[0])],
             alt = item.altitude,
             dist = item.dist,
             ll = item.latlng,
             numY = opts.hoverNumber.formatter(alt, opts.hoverNumber.decimalsY),
             numX = opts.hoverNumber.formatter(dist, opts.hoverNumber.decimalsX);
-
-        this._focuslabelX.attr("x", coords[0])
-            .text(numY + " m");
-        this._focuslabelY.attr("y", this._height() - 5)
-            .attr("x", coords[0])
-            .text(numX + " km");
+        
+        this._showDiagramIndicator(item, coords[0]);
 
         var layerpoint = this._map.latLngToLayerPoint(ll);
 
@@ -606,11 +608,49 @@ L.Control.Elevation = L.Control.extend({
      * Add data to the diagram either from GPX or GeoJSON and
      * update the axis domain and data
      */
-    addData: function(d) {
+    addData: function(d, layer) {
         this._addData(d);
         if (this._container) {
             this._applyData();
         }
+        layer.on("mousemove", this._handleLayerMouseOver.bind(this));
+    },
+
+    /*
+     * Handles mouseover events of the data layers on the map.
+     */
+    _handleLayerMouseOver: function(evt) {
+        if (!this._data || this._data.length === 0) {
+            return;
+        }
+        var latlng = evt.latlng;
+        var item = this._findItemForLatLng(latlng);
+        if (item) {
+            var x = item.xDiagCoord;
+            this._showDiagramIndicator(item, x);
+        }
+    },
+
+    _showDiagramIndicator: function(item, xCoordinate) {
+        var opts = this.options;
+        this._focusG.style("visibility", "visible");
+        this._mousefocus.attr('x1', xCoordinate)
+            .attr('y1', 0)
+            .attr('x2', xCoordinate)
+            .attr('y2', this._height())
+            .classed('hidden', false);
+
+        var alt = item.altitude,
+            dist = item.dist,
+            ll = item.latlng,
+            numY = opts.hoverNumber.formatter(alt, opts.hoverNumber.decimalsY),
+            numX = opts.hoverNumber.formatter(dist, opts.hoverNumber.decimalsX);
+
+        this._focuslabelX.attr("x", xCoordinate)
+            .text(numY + " m");
+        this._focuslabelY.attr("y", this._height() - 5)
+            .attr("x", xCoordinate)
+            .text(numX + " km");
     },
 
     _applyData: function() {
