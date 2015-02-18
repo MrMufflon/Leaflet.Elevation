@@ -23,6 +23,10 @@ Supported data:
 
 <img src="http://mrmufflon.github.io/Leaflet.Elevation/images/screen.jpg"/>
 
+### Install with npm
+
+`` npm install leaflet.elevation ``
+
 ### Install with Bower
 
 `` bower install leaflet.elevation ``
