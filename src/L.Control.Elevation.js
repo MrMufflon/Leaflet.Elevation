@@ -616,6 +616,9 @@ L.Control.Elevation = L.Control.extend({
         if (this._container) {
             this._applyData();
         }
+        if (layer == null) {
+            layer = d;
+        }
         layer.on("mousemove", this._handleLayerMouseOver.bind(this));
     },
 
