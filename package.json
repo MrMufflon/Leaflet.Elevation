@@ -1,41 +1,41 @@
 {
-    "name": "leaflet.elevation",
-    "version": "0.0.2",
-    "description": "A Leaflet plugin to view GeoJSON- and GPX height profiles",
-    "devDependencies": {
-        "grunt": "~0.4",
-        "grunt-contrib-uglify": "~0.3",
-        "grunt-contrib-concat": "~0.3",
-        "grunt-contrib-clean": "~0.5",
-        "grunt-contrib-cssmin": "~0.8",
-        "grunt-contrib-jasmine": "~0.6",
-        "grunt-contrib-connect": "~0.7",
-        "grunt-contrib-jshint": "~0.8",
-        "grunt-contrib-less": "~0.9",
-        "grunt-svg2png": "~0.2",
-        "jasmine": "https://github.com/jasmine/jasmine/archive/v2.0.0.tar.gz"
-    },
-    "browserDependencies":{
-        "leaflet": "~0.7",
-        "d3": "~3.1"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/MrMufflon/Leaflet.Elevation.git"
-    },
-    "keywords": [
-        "gis",
-        "heightprofile",
-        "elevation",
-        "leaflet",
-        "map",
-        "sdi"
-    ],
-    "author": "Felix Bache",
-    "readmeFilename": "README.md",
-    "homepage": "http://mrmufflon.github.io/Leaflet.Elevation/",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/MrMufflon/Leaflet.Elevation/issues"
-    }
+  "name": "leaflet.elevation",
+  "version": "0.0.3",
+  "description": "A Leaflet plugin to view GeoJSON- and GPX height profiles",
+  "devDependencies": {
+    "grunt": "~0.4",
+    "grunt-contrib-uglify": "~0.3",
+    "grunt-contrib-concat": "~0.3",
+    "grunt-contrib-clean": "~0.5",
+    "grunt-contrib-cssmin": "~0.8",
+    "grunt-contrib-jasmine": "~0.6",
+    "grunt-contrib-connect": "~0.7",
+    "grunt-contrib-jshint": "~0.8",
+    "grunt-contrib-less": "~0.9",
+    "grunt-svg2png": "~0.2",
+    "jasmine": "https://github.com/jasmine/jasmine/archive/v2.0.0.tar.gz"
+  },
+  "browserDependencies": {
+    "leaflet": "~0.7",
+    "d3": "~3.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MrMufflon/Leaflet.Elevation.git"
+  },
+  "keywords": [
+    "gis",
+    "heightprofile",
+    "elevation",
+    "leaflet",
+    "map",
+    "sdi"
+  ],
+  "author": "Felix Bache",
+  "readmeFilename": "README.md",
+  "homepage": "http://mrmufflon.github.io/Leaflet.Elevation/",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MrMufflon/Leaflet.Elevation/issues"
+  }
 }
