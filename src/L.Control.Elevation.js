@@ -22,7 +22,8 @@ L.Control.Elevation = L.Control.extend({
         collapsed: false,
         yAxisMin: undefined,
         yAxisMax: undefined,
-        forceAxisBounds: false
+        forceAxisBounds: false,
+        imperial: false
     },
 
     onRemove: function(map) {
@@ -355,7 +356,22 @@ L.Control.Elevation = L.Control.extend({
     },
 
     _appendYaxis: function(y) {
-        y.attr("class", "y axis")
+        var opts = this.options;
+
+        if(opts.imperial){
+            y.attr("class", "y axis")
+            .call(d3.svg.axis()
+                .scale(this._y)
+                .ticks(this.options.yTicks)
+                .orient("left"))
+            .append("text")
+            .attr("x", -37)
+            .attr("y", 3)
+            .style("text-anchor", "end")
+            .text("ft");
+        }
+        else{
+            y.attr("class", "y axis")
             .call(d3.svg.axis()
                 .scale(this._y)
                 .ticks(this.options.yTicks)
@@ -365,10 +381,27 @@ L.Control.Elevation = L.Control.extend({
             .attr("y", 3)
             .style("text-anchor", "end")
             .text("m");
+        }
     },
 
     _appendXaxis: function(x) {
-        x.attr("class", "x axis")
+        var opts = this.options;
+
+        if(opts.imperial){
+            x.attr("class", "x axis")
+            .attr("transform", "translate(0," + this._height() + ")")
+            .call(d3.svg.axis()
+                .scale(this._x)
+                .ticks(this.options.xTicks)
+                .orient("bottom"))
+            .append("text")
+            .attr("x", this._width() + 20)
+            .attr("y", 15)
+            .style("text-anchor", "end")
+            .text("m");
+        }
+        else{
+            x.attr("class", "x axis")
             .attr("transform", "translate(0," + this._height() + ")")
             .call(d3.svg.axis()
                 .scale(this._x)
@@ -379,6 +412,7 @@ L.Control.Elevation = L.Control.extend({
             .attr("y", 15)
             .style("text-anchor", "end")
             .text("km");
+        }
     },
 
     _updateAxis: function() {
@@ -503,6 +537,7 @@ L.Control.Elevation = L.Control.extend({
      * Parsing of GeoJSON data lines and their elevation in z-coordinate
      */
     _addGeoJSONData: function(coords) {
+        var opts = this.options;
         if (coords) {
             var data = this._data || [];
             var dist = this._dist || 0;
@@ -511,8 +546,14 @@ L.Control.Elevation = L.Control.extend({
                 var s = new L.LatLng(coords[i][1], coords[i][0]);
                 var e = new L.LatLng(coords[i ? i - 1 : 0][1], coords[i ? i - 1 : 0][0]);
                 var newdist = s.distanceTo(e);
+                if(opts.imperial){
+                    newdist = newdist * 0.621371;
+                }
                 dist = dist + Math.round(newdist / 1000 * 100000) / 100000;
                 ele = ele < coords[i][2] ? coords[i][2] : ele;
+                if(opts.imperial){
+                    ele = ele * 3.28084;
+                }
                 data.push({
                     dist: dist,
                     altitude: coords[i][2],
@@ -531,6 +572,7 @@ L.Control.Elevation = L.Control.extend({
      * Parsing function for GPX data as used by https://github.com/mpetazzoni/leaflet-gpx
      */
     _addGPXdata: function(coords) {
+        var opts = this.options;
         if (coords) {
             var data = this._data || [];
             var dist = this._dist || 0;
@@ -539,8 +581,14 @@ L.Control.Elevation = L.Control.extend({
                 var s = coords[i];
                 var e = coords[i ? i - 1 : 0];
                 var newdist = s.distanceTo(e);
+                if(opts.imperial){
+                    newdist = newdist * 0.621371;
+                }
                 dist = dist + Math.round(newdist / 1000 * 100000) / 100000;
                 ele = ele < s.meta.ele ? s.meta.ele : ele;
+                if(opts.imperial){
+                    ele = ele * 3.28084;
+                }
                 data.push({
                     dist: dist,
                     altitude: s.meta.ele,
@@ -654,11 +702,20 @@ L.Control.Elevation = L.Control.extend({
             numY = opts.hoverNumber.formatter(alt, opts.hoverNumber.decimalsY),
             numX = opts.hoverNumber.formatter(dist, opts.hoverNumber.decimalsX);
 
-        this._focuslabelX.attr("x", xCoordinate)
-            .text(numY + " m");
-        this._focuslabelY.attr("y", this._height() - 5)
-            .attr("x", xCoordinate)
-            .text(numX + " km");
+        if(opts.imperial){
+            this._focuslabelX.attr("x", xCoordinate)
+                .text(numY + " ft");
+            this._focuslabelY.attr("y", this._height() - 5)
+                .attr("x", xCoordinate)
+                .text(numX + " mi");
+        }
+        else{
+            this._focuslabelX.attr("x", xCoordinate)
+                .text(numY + " m");
+            this._focuslabelY.attr("y", this._height() - 5)
+                .attr("x", xCoordinate)
+                .text(numX + " km");
+        }
     },
 
     _applyData: function() {
