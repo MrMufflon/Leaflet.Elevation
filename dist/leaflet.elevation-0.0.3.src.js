@@ -395,10 +395,10 @@ L.Control.Elevation = L.Control.extend({
                 .ticks(this.options.xTicks)
                 .orient("bottom"))
             .append("text")
-            .attr("x", this._width() + 20)
+            .attr("x", this._width() + 10)
             .attr("y", 15)
             .style("text-anchor", "end")
-            .text("m");
+            .text("mi");
         }
         else{
             x.attr("class", "x axis")
@@ -512,10 +512,18 @@ L.Control.Elevation = L.Control.extend({
             this._pointG.attr("transform", "translate(" + layerpoint.x + "," + layerpoint.y + ")")
                 .style("visibility", "visible");
 
-            this._mouseHeightFocusLabel.attr("x", layerpoint.x)
-                .attr("y", normalizedY)
-                .text(numY + " m")
-                .style("visibility", "visible");
+            if(opts.imperial) {
+                this._mouseHeightFocusLabel.attr("x", layerpoint.x)
+                    .attr("y", normalizedY)
+                    .text(numY + " ft")
+                    .style("visibility", "visible");
+            }
+            else {
+                this._mouseHeightFocusLabel.attr("x", layerpoint.x)
+                    .attr("y", normalizedY)
+                    .text(numY + " m")
+                    .style("visibility", "visible");
+            }
 
         } else {
 
