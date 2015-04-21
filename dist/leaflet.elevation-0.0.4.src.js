@@ -245,6 +245,9 @@ L.Control.Elevation = L.Control.extend({
         return bisect(this._data, xinvert);
     },
 
+    /*
+     * Finds an item with the smallest delta in distance to the given latlng coords
+     */
     _findItemForLatLng: function(latlng) {
         var result = null,
             d = Infinity;
@@ -424,14 +427,14 @@ L.Control.Elevation = L.Control.extend({
         }
         var coords = d3.mouse(this._background.node());
         var opts = this.options;
-        
+
         var item = this._data[this._findItemForX(coords[0])],
             alt = item.altitude,
             dist = item.dist,
             ll = item.latlng,
             numY = opts.hoverNumber.formatter(alt, opts.hoverNumber.decimalsY),
             numX = opts.hoverNumber.formatter(dist, opts.hoverNumber.decimalsX);
-        
+
         this._showDiagramIndicator(item, coords[0]);
 
         var layerpoint = this._map.latLngToLayerPoint(ll);
@@ -613,7 +616,12 @@ L.Control.Elevation = L.Control.extend({
         if (this._container) {
             this._applyData();
         }
-        layer.on("mousemove", this._handleLayerMouseOver.bind(this));
+        if (layer === null && d.on) {
+            layer = d;
+        }
+        if (layer) {
+            layer.on("mousemove", this._handleLayerMouseOver.bind(this));
+        }
     },
 
     /*

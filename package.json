@@ -1,6 +1,6 @@
 {
   "name": "leaflet.elevation",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A Leaflet plugin to view GeoJSON- and GPX height profiles",
   "devDependencies": {
     "grunt": "~0.4",
