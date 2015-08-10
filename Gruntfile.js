@@ -32,8 +32,12 @@ module.exports = function(grunt) {
         cssmin: {
             combine: {
                 files: {
-                    'dist/<%= pkg.name %>-<%= pkg.version%>.css': ['tmp/css/themes/lime.min.css', 'tmp/css/themes/steelblue.min.css', 'tmp/css/themes/purple.min.css'],
-                    'src/css/L.Control.Elevation.css': ['src/css/themes/lime.css', 'src/css/themes/steelblue.css', 'src/css/themes/purple.css']
+                    'dist/<%= pkg.name %>-<%= pkg.version%>.css': ['tmp/css/themes/lime.min.css',
+                        'tmp/css/themes/steelblue.min.css', 'tmp/css/themes/purple.min.css'
+                    ],
+                    'src/css/L.Control.Elevation.css': ['src/css/themes/lime.css',
+                        'src/css/themes/steelblue.css', 'src/css/themes/purple.css'
+                    ]
                 }
             },
             minify: {
@@ -77,8 +81,9 @@ module.exports = function(grunt) {
         svg2png: {
             all: {
                 files: [{
-                    src: ['src/images/*.svg'],
-                    dest: 'dist/images/'
+                    cwd: 'src/images/',
+                    src: ['**/*.svg'],
+                    dest: 'dist/images'
                 }]
             }
         },
@@ -121,7 +126,9 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-svg2png');
 
     // Default task(s).
-    grunt.registerTask('default', ['clean', 'jshint', 'connect', 'jasmine', 'concat', 'uglify', 'less', 'cssmin', 'svg2png']);
+    grunt.registerTask('default', ['clean', 'jshint', 'connect', 'jasmine', 'concat', 'uglify', 'less', 'cssmin',
+        'svg2png'
+    ]);
 
     grunt.registerTask('test', ['connect', 'jasmine']);
 

@@ -22,7 +22,11 @@ L.Control.Elevation = L.Control.extend({
         collapsed: false,
         yAxisMin: undefined,
         yAxisMax: undefined,
-        forceAxisBounds: false
+        forceAxisBounds: false,
+        controlButton: {
+            iconCssClass: "elevation-toggle-icon",
+            title: "Elevation"
+        }
     },
 
     onRemove: function(map) {
@@ -298,9 +302,10 @@ L.Control.Elevation = L.Control.extend({
                     .on(container, 'mouseover', this._expand, this)
                     .on(container, 'mouseout', this._collapse, this);
             }
-            var link = this._button = L.DomUtil.create('a', 'elevation-toggle', container);
+            var link = this._button = L.DomUtil.create('a', "elevation-toggle " + this.options.controlButton
+                .iconCssClass, container);
             link.href = '#';
-            link.title = 'Elevation';
+            link.title = this.options.controlButton.title;
 
             if (L.Browser.touch) {
                 L.DomEvent

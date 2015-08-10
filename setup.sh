@@ -8,4 +8,4 @@ npm install grunt-contrib-less --save-dev
 npm install grunt-contrib-jasmine --save-dev
 npm install grunt-contrib-connect --save-dev
 npm install grunt-svg2png --save-dev
-
+npm install jasmine --save-dev
