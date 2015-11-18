@@ -42,9 +42,6 @@ L.Control.Elevation = L.Control.extend({
         opts.yTicks = opts.yTicks || Math.round(this._height() / 30);
         opts.hoverNumber.formatter = opts.hoverNumber.formatter || this._formatter;
 
-        //append theme name on body
-        //d3.select("body").classed(opts.theme, true);
-
         var x = this._x = d3.scale.linear()
             .range([0, this._width()]);
 
@@ -64,7 +61,7 @@ L.Control.Elevation = L.Control.extend({
             });
 
         var container = this._container = L.DomUtil.create("div", "elevation");
-        L.DomUtil.addClass(container, opts.theme);
+        L.DomUtil.addClass(container, opts.theme); //append theme to control
 
         this._initToggle();
 
