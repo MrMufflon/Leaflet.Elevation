@@ -1,75 +1,73 @@
-.@{theme}{
+.@{theme}.leaflet-control.elevation {
 
-	.leaflet-control.elevation .background{
+	.background {
 		background-color:@background;
 		.rounded-corners;
 	}
 
-	.leaflet-control.elevation{
-		.axis path,
-		.axis line {
-			fill: none;
-			stroke: @axis-color;
-			stroke-width:@stroke-width-axis;
-		}
+	.axis path,
+	.axis line {
+		fill: none;
+		stroke: @axis-color;
+		stroke-width:@stroke-width-axis;
 	}
 
-	.leaflet-control.elevation  .area {
+	.mouse-focus-label-y,
+	.mouse-focus-label-x {
+
+	}
+	.mouse-drag{
+		fill:@drag-color;
+	}
+
+	.elevation-toggle {
+		cursor: pointer;
+		box-shadow: 0 1px 7px rgba(0,0,0,0.4);
+		-webkit-border-radius: 5px;
+		border-radius: 5px;
+		width: 36px;
+		height: 36px;
+		background-color: #f8f8f9;
+	}
+	.elevation-toggle-icon{
+		background: url(@icon) no-repeat center center;
+	}
+
+	.area {
 		fill: @base-color;
 	}
 
-	.leaflet-control.elevation  .mouse-focus-line {
+	.mouse-focus-line {
 		pointer-events: none;
 		stroke-width:@stroke-width-mouse-focus;
 		stroke:@stroke-color;
 	}
+}
 
-	.leaflet-control.elevation {
-		.elevation-toggle {
-			cursor: pointer;
-			box-shadow: 0 1px 7px rgba(0,0,0,0.4);
-			-webkit-border-radius: 5px;
-			border-radius: 5px;
-			width: 36px;
-			height: 36px;
-			background-color: #f8f8f9;
-		}
-		.elevation-toggle-icon{
-			background: url('images/elevation.png') no-repeat center center;
-		}
-	}
-
-	.leaflet-control.elevation-collapsed .background {
+.@{theme}.leaflet-control.elevation-collapsed {
+	.background {
 		display: none;
 	}
-	.leaflet-control.elevation-collapsed .elevation-toggle {
+
+	.elevation-toggle {
 		display: block;
 	}
+}
 
-	.leaflet-control.elevation{
-		.mouse-focus-label-y,
-		.mouse-focus-label-x {
+.@{theme}.height-focus{
+	stroke:@base-color;
+	fill:@base-color;
+}
 
-		}
-		.mouse-drag{
-			fill:@drag-color;
-		}
-	}
+.@{theme}.height-focus.line{
+	pointer-events: none;
+	stroke-width:@stroke-width-height-focus;
+}
 
-	.leaflet-overlay-pane {
-		.height-focus{
-			stroke:@base-color;
-			fill:@base-color;
-		}
-		.height-focus.line{
-			pointer-events: none;
-			stroke-width:@stroke-width-height-focus;
-		}
-		.height-focus-label{
+.@{theme}.height-focus-label{
 
-		}
-		.height-focus.circle-lower {
+}
 
-		}
-	}
+.@{theme}.height-focus.circle-lower {
+
 }

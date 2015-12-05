@@ -42,9 +42,6 @@ L.Control.Elevation = L.Control.extend({
         opts.yTicks = opts.yTicks || Math.round(this._height() / 30);
         opts.hoverNumber.formatter = opts.hoverNumber.formatter || this._formatter;
 
-        //append theme name on body
-        d3.select("body").classed(opts.theme, true);
-
         var x = this._x = d3.scale.linear()
             .range([0, this._width()]);
 
@@ -64,6 +61,7 @@ L.Control.Elevation = L.Control.extend({
             });
 
         var container = this._container = L.DomUtil.create("div", "elevation");
+        L.DomUtil.addClass(container, opts.theme); //append theme to control
 
         this._initToggle();
 
@@ -453,21 +451,21 @@ L.Control.Elevation = L.Control.extend({
                 var heightG = d3.select(".leaflet-overlay-pane svg")
                     .append("g");
                 this._mouseHeightFocus = heightG.append('svg:line')
-                    .attr('class', 'height-focus line')
-                    .attr('x2', '0')
-                    .attr('y2', '0')
-                    .attr('x1', '0')
-                    .attr('y1', '0');
+                    .attr("class", opts.theme + " height-focus line")
+                    .attr("x2", 0)
+                    .attr("y2", 0)
+                    .attr("x1", 0)
+                    .attr("y1", 0);
 
                 var pointG = this._pointG = heightG.append("g");
                 pointG.append("svg:circle")
                     .attr("r", 6)
                     .attr("cx", 0)
                     .attr("cy", 0)
-                    .attr("class", "height-focus circle-lower");
+                    .attr("class", opts.theme + " height-focus circle-lower");
 
                 this._mouseHeightFocusLabel = heightG.append("svg:text")
-                    .attr("class", "height-focus-label")
+                    .attr("class", opts.theme + " height-focus-label")
                     .style("pointer-events", "none");
 
             }
