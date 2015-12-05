@@ -100,12 +100,13 @@ To generate different themes [lessCSS](http://lesscss.org/) is used. Create your
 @theme : lime-theme;
 @base-color : #9CC222; //basecolor to derive other colors from
 @highlight-color : #637E0B; //basecolor to derive selections from
-@background : fade(@base-color,20%); //background-color 
+@background : fade(@base-color,20%); //background-color
 @drag-color : fade(@highlight-color,40%); //drag selection color
 @axis-color : darken(@base-color,20%); //color of axes
 @stroke-color : darken(@base-color,40%); //color for mouse highlight
 @stroke-width-mouse-focus : 1; //stroke width for mouse highlight
 @stroke-width-height-focus: 2; //stroke width for height focus indicator
-@stroke-width-axis : 2; //stroke width for axes;
+@stroke-width-axis : 2; //stroke width for axes
+@icon : 'images/elevation-lime.png'; //path to icon for collapsed button
 ```
 Add the theme file to the less- and cssmin task in the Gruntfile and you´re good to go.
