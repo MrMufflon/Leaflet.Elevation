@@ -137,6 +137,41 @@ describe('L.Control.Elevation', function() {
 });
 
 describe('L.Control.Elevation', function() {
+    it('adds calculates imperial units correctly', function() {
+        var el = new L.control.elevation({
+            imperial: true
+        });
+        var geojson = {
+            "name": "NewFeatureType",
+            "type": "FeatureCollection",
+            "features": [{
+                "type": "Feature",
+                "geometry": {
+                    "type": "LineString",
+                    "coordinates": [
+                        [169.13693, -44.696476, 296],
+                        [169.134602, -44.69764, 295],
+                        [169.129983, -44.701164, 299]
+                    ]
+                },
+                "properties": null
+            }]
+        };
+        el._addData(geojson);
+        expect(el._data.length).toEqual(3);
+        var item = el._data[0];
+        //expect(item.x).toEqual(169.13693);
+        //expect(item.y).toEqual(-44.696476);
+        expect(item.altitude).toEqual(971.12864);
+        expect(item.dist).toEqual(0);
+
+        item = el._data[1];
+        expect(item.altitude).toEqual(967.8478);
+        expect(el._data[2].dist).toEqual(0.47311000000000003);
+    });
+});
+
+describe('L.Control.Elevation', function() {
     var el = new L.control.elevation();
     it('calculates the datas extent', function() {
         var geojson = {

@@ -13,7 +13,8 @@
         "grunt-contrib-jshint": "~0.8",
         "grunt-contrib-less": "~0.9",
         "grunt-svg2png": "~0.2",
-        "jasmine": "~2.3"
+        "jasmine": "~2.4",
+        "jasmine-core": "~2.4"
     },
     "browserDependencies": {
         "leaflet": "~0.7",
