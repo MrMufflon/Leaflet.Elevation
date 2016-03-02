@@ -770,6 +770,12 @@ L.Control.Elevation = L.Control.extend({
         this._x.domain([0, 1]);
         this._y.domain([0, 1]);
         this._updateAxis();
+    },
+    hide: function() {
+        this._container.style.display = "none"
+    },
+    show: function() {
+        this._container.style.display = "block"
     }
 
 });
