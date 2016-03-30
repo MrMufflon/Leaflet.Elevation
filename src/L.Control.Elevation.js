@@ -38,6 +38,7 @@ L.Control.Elevation = L.Control.extend({
 
     onAdd: function(map) {
         this._map = map;
+        this._mapContainer = map.getContainer();
 
         var opts = this.options;
         var margin = opts.margins;
@@ -482,7 +483,7 @@ L.Control.Elevation = L.Control.extend({
 
             if (!this._mouseHeightFocus) {
 
-                var heightG = d3.select(".leaflet-overlay-pane svg")
+                var heightG = d3.select(this._mapContainer).select(".leaflet-overlay-pane svg")
                     .append("g");
                 this._mouseHeightFocus = heightG.append('svg:line')
                     .attr("class", opts.theme + " height-focus line")
