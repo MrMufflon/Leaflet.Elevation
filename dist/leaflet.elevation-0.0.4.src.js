@@ -619,6 +619,10 @@ L.Control.Elevation = L.Control.extend({
                     }
                     break;
 
+                case 'Point':
+                    console.log("Geometry of type Point found in GeoJSON, ignoring it for elevation plot.");
+                    break;
+
                 default:
                     throw new Error('Invalid GeoJSON object.');
             }
