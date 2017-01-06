@@ -363,6 +363,9 @@ L.Control.Elevation = L.Control.extend({
      * @param j - this._data index of the end of zoom
      */
     _zoom: function(i,j) {
+        if (!this.options.elevationZoom) {
+            return;
+        }
         if (i > j) {
             var tmp = j;
 	    j = i;
