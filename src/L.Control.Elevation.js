@@ -70,7 +70,7 @@ L.Control.Elevation = L.Control.extend({
 
         var cont = d3.select(container);
         cont.attr("width", opts.width);
-        var svg = cont.append("svg");
+        var svg = this._svg = cont.append("svg");
         svg.attr("width", opts.width)
             .attr("class", "background")
             .attr("height", opts.height)
@@ -199,6 +199,7 @@ L.Control.Elevation = L.Control.extend({
             this._hidePositionMarker();
 
             this._map.fitBounds(this._fullExtent);
+			this.animate(0, this._data.length-1);
 
         }
 
@@ -220,8 +221,10 @@ L.Control.Elevation = L.Control.extend({
 
         var item1 = this._findItemForX(this._dragStartCoords[0]),
             item2 = this._findItemForX(this._dragCurrentCoords[0]);
+		console.log(this._dragStartCoords[0] + " " + this._dragCurrentCoords[0]);
 
         this._fitSection(item1, item2);
+		this.animate( this._dragStartCoords[0], this._dragCurrentCoords[0] );
 
         this._dragStartCoords = null;
         this._gotDragged = false;
@@ -243,6 +246,7 @@ L.Control.Elevation = L.Control.extend({
      * Finds a data entry for a given x-coordinate of the diagram
      */
     _findItemForX: function(x) {
+		//console.log(x);
         var bisect = d3.bisector(function(d) {
             return d.dist;
         }).left;
@@ -338,6 +342,19 @@ L.Control.Elevation = L.Control.extend({
         var opts = this.options;
         return opts.height - opts.margins.top - opts.margins.bottom;
     },
+
+	animate: function(i,j) {
+		console.log( "animating" + i + " " + j);
+        var xdomain = d3.extent(this._data.slice(i,j), function(d) {
+            return d.dist;
+        });
+		this._x.domain(xdomain);
+		var t = this._svg.transition().duration(750);
+		//t.select("leaflet-control.elevation.axis").call
+		t.select(".area").attr("d", this._area);
+	},
+
+		
 
     /*
      * Fromatting funciton using the given decimals and seperator
@@ -559,6 +576,7 @@ L.Control.Elevation = L.Control.extend({
                 dist = dist + Math.round(newdist / 1000 * 100000) / 100000;
                 ele = ele < coords[i][2] ? coords[i][2] : ele;
                 data.push({
+					index: i,
                     dist: dist,
                     altitude: opts.imperial ? coords[i][2] * this.__footFactor : coords[i][2],
                     x: coords[i][0],
@@ -589,6 +607,7 @@ L.Control.Elevation = L.Control.extend({
                 dist = dist + Math.round(newdist / 1000 * 100000) / 100000;
                 ele = ele < s.meta.ele ? s.meta.ele : ele;
                 data.push({
+					index: i,
                     dist: dist,
                     altitude: opts.imperial ? s.meta.ele * this.__footFactor : s.meta.ele,
                     x: s.lng,

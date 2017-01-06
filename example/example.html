@@ -18,7 +18,7 @@
 	<link rel="stylesheet" href="../dist/leaflet.elevation-0.0.4.css" />
 
 	<script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
-	<script type="text/javascript" src="../dist/leaflet.elevation-0.0.4.min.js"></script>
+	<script type="text/javascript" src="../src/L.Control.Elevation.js"></script>
 </head>
 <body>
 
@@ -27,7 +27,7 @@
 	<script type="text/javascript">
 		var map = new L.Map('map');
 
-		var url = 'http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg',
+		var url = 'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
 			attr ='Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 			service = new L.TileLayer(url, {subdomains:"1234",attribution: attr});
 
