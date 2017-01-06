@@ -99,7 +99,7 @@ L.Control.Elevation = L.Control.extend({
             .style("stroke", "none")
             .style("pointer-events", "all");
 
-	svg.append("clipPath").attr("id", "clip")
+	g.append("clipPath").attr("id", "clip")
 		.append("rect").attr("width", this._width())
 		.attr("height", this._height());
 
@@ -363,6 +363,11 @@ L.Control.Elevation = L.Control.extend({
      * @param j - this._data index of the end of zoom
      */
     _zoom: function(i,j) {
+        if (i > j) {
+            var tmp = j;
+	    j = i;
+	    i = tmp;
+	}
         var xdomain = d3.extent(this._data.slice(i,j), function(d) {
             return d.dist;
         });
