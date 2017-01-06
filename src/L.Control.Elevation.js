@@ -197,11 +197,9 @@ L.Control.Elevation = L.Control.extend({
             this._dragRectangle = null;
 
             this._hidePositionMarker();
-
-            this._map.fitBounds(this._fullExtent);
-			this.animate(0, this._data.length-1);
-
         }
+        this._map.fitBounds(this._fullExtent);
+        this.animate(0, this._data.length-1);
 
     },
 
@@ -221,13 +219,22 @@ L.Control.Elevation = L.Control.extend({
 
         var item1 = this._findItemForX(this._dragStartCoords[0]),
             item2 = this._findItemForX(this._dragCurrentCoords[0]);
-		console.log(this._dragStartCoords[0] + " " + this._dragCurrentCoords[0]);
+	if (item1 == item2) {
+		this._resetDrag();
+		return;
+	}
 
         this._fitSection(item1, item2);
-		this.animate( this._dragStartCoords[0], this._dragCurrentCoords[0] );
+        this.animate(item1, item2);
 
         this._dragStartCoords = null;
         this._gotDragged = false;
+        if (this._dragRectangleG) {
+
+            this._dragRectangleG.remove();
+            this._dragRectangleG = null;
+            this._dragRectangle = null;
+	}
 
     },
 
@@ -246,7 +253,6 @@ L.Control.Elevation = L.Control.extend({
      * Finds a data entry for a given x-coordinate of the diagram
      */
     _findItemForX: function(x) {
-		//console.log(x);
         var bisect = d3.bisector(function(d) {
             return d.dist;
         }).left;
@@ -343,16 +349,15 @@ L.Control.Elevation = L.Control.extend({
         return opts.height - opts.margins.top - opts.margins.bottom;
     },
 
-	animate: function(i,j) {
-		console.log( "animating" + i + " " + j);
+    animate: function(i,j) {
         var xdomain = d3.extent(this._data.slice(i,j), function(d) {
             return d.dist;
         });
-		this._x.domain(xdomain);
-		var t = this._svg.transition().duration(750);
-		//t.select("leaflet-control.elevation.axis").call
-		t.select(".area").attr("d", this._area);
-	},
+	this._x.domain(xdomain);
+	var t = this._svg.transition().duration(750);
+        t.select(".x.axis").call(this._x_axis);
+        t.select(".area").attr("d", this._area);
+    },
 
 		
 
@@ -377,6 +382,9 @@ L.Control.Elevation = L.Control.extend({
         return res;
     },
 
+    /*
+     * @param y - <g> container
+     */
     _appendYaxis: function(y) {
         var opts = this.options;
 
@@ -405,16 +413,20 @@ L.Control.Elevation = L.Control.extend({
         }
     },
 
+    /*
+     * @param x - <g> container
+     */
     _appendXaxis: function(x) {
         var opts = this.options;
+	this._x_axis = d3.svg.axis()
+                    .scale(this._x)
+                    .ticks(this.options.xTicks)
+                    .orient("bottom");
 
         if (opts.imperial) {
             x.attr("class", "x axis")
                 .attr("transform", "translate(0," + this._height() + ")")
-                .call(d3.svg.axis()
-                    .scale(this._x)
-                    .ticks(this.options.xTicks)
-                    .orient("bottom"))
+                .call(this._x_axis)
                 .append("text")
                 .attr("x", this._width() + 10)
                 .attr("y", 15)
@@ -576,7 +588,7 @@ L.Control.Elevation = L.Control.extend({
                 dist = dist + Math.round(newdist / 1000 * 100000) / 100000;
                 ele = ele < coords[i][2] ? coords[i][2] : ele;
                 data.push({
-					index: i,
+                    index: i,
                     dist: dist,
                     altitude: opts.imperial ? coords[i][2] * this.__footFactor : coords[i][2],
                     x: coords[i][0],
