@@ -27,7 +27,8 @@ L.Control.Elevation = L.Control.extend({
             iconCssClass: "elevation-toggle-icon",
             title: "Elevation"
         },
-        imperial: false
+        imperial: false,
+	elevationZoom: true
     },
     __mileFactor: 0.621371,
     __footFactor: 3.28084,
@@ -97,6 +98,10 @@ L.Control.Elevation = L.Control.extend({
             .style("fill", "none")
             .style("stroke", "none")
             .style("pointer-events", "all");
+
+	svg.append("clipPath").attr("id", "clip")
+		.append("rect").attr("width", this._width())
+		.attr("height", this._height());
 
         if (L.Browser.touch) {
 
@@ -199,7 +204,7 @@ L.Control.Elevation = L.Control.extend({
             this._hidePositionMarker();
         }
         this._map.fitBounds(this._fullExtent);
-        this.animate(0, this._data.length-1);
+        this._zoom(0, this._data.length-1);
 
     },
 
@@ -225,7 +230,7 @@ L.Control.Elevation = L.Control.extend({
 	}
 
         this._fitSection(item1, item2);
-        this.animate(item1, item2);
+        this._zoom(item1, item2);
 
         this._dragStartCoords = null;
         this._gotDragged = false;
@@ -349,7 +354,15 @@ L.Control.Elevation = L.Control.extend({
         return opts.height - opts.margins.top - opts.margins.bottom;
     },
 
-    animate: function(i,j) {
+    /*
+     * Zooms (in or out) the elevation graph
+     * for the given x item indexes
+     * (with awesome svg path animation)
+     *
+     * @param i - this._data index of the beggining of zoom
+     * @param j - this._data index of the end of zoom
+     */
+    _zoom: function(i,j) {
         var xdomain = d3.extent(this._data.slice(i,j), function(d) {
             return d.dist;
         });
@@ -767,7 +780,8 @@ L.Control.Elevation = L.Control.extend({
         this._x.domain(xdomain);
         this._y.domain(ydomain);
         this._areapath.datum(this._data)
-            .attr("d", this._area);
+            .attr("d", this._area)
+            .attr("clip-path", "url(#clip)");
         this._updateAxis();
 
         this._fullExtent = this._calculateFullExtent(this._data);
