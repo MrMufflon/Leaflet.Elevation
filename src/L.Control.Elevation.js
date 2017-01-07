@@ -88,7 +88,7 @@ L.Control.Elevation = L.Control.extend({
 
         var g = d3.select(this._container).select("svg").select("g");
 
-        this._areapath = g.append("path")
+        this._areapath = g.append("g").append("path")
             .attr("class", "area");
 
         var background = this._background = g.append("rect")
@@ -329,6 +329,9 @@ L.Control.Elevation = L.Control.extend({
         L.DomUtil.addClass(this._container, 'elevation-collapsed');
     },
 
+    /*
+     * Width of the actual plot, not the entire L.Control
+     */
     _width: function() {
         var opts = this.options;
         return opts.width - opts.margins.left - opts.margins.right;
@@ -339,6 +342,91 @@ L.Control.Elevation = L.Control.extend({
         return opts.height - opts.margins.top - opts.margins.bottom;
     },
 
+    /*
+     * Change width of the Control
+     */
+    /*
+     * <div.container>
+     *   <svg> (width,height)
+     *     <g>
+     *       <g>
+     *         <path.area>
+     *       <g>
+     *       <rect>
+     *       <g.x.axis>
+     *       <g.y.axis>
+     *       <g.marker>
+     *         <line />
+     *         <text />
+     *         <text />
+     *       </g.marker>
+     *     </g>
+     *   </svg>
+     * <div>
+     */
+    width: function(w) {
+        if(!w) return this.options.width;
+        console.log(w);
+
+	var old_width = this._width();
+
+        var opts = this.options;
+	opts.width = w;
+        opts.xTicks = opts.xTicks || Math.round(this._width() / 75);
+        opts.yTicks = opts.yTicks || Math.round(this._height() / 30);
+
+	//var ease = d3.easeBackInOut(2000,3.0);
+
+	var new_width = this._width();
+	var scale = new_width / old_width;
+	this._x.range([0,this._width()]);
+	var cont = d3.select(this._container);
+	cont.transition().duration(2000).style("width", w)
+	var svg = cont.select("svg");
+	svg.transition().duration(2000).style("width", w);
+	var g_cont = svg.select("g");
+	g_cont.select("g").transition().duration(2000).attr("transform", "scale("+scale.toString()+",1)");
+	this._background.transition().duration(2000).style("width", this._width());
+        this._xaxisgraphicnode.transition().duration(2000).call(this._x_axis);
+
+	//g_cont.select("g").transition().duration(2000).attrTween("transform", function(d, i, a) {
+   	// return d3.interpolateString(a, 'scale('+ scale.toString() +',1)');
+	//});
+	
+	/*
+	this._x.range([0,this._width()]);
+	var cont = d3.select(this._container);
+	cont.transition().duration(2000).style("width", w)
+	var svg = cont.select("svg");
+	svg.transition().duration(2000).style("width", w);
+	//svg.attr("transform", "scale(1,1)").transition().duration(2000)
+	//	.attr("transform", "scale(2,1)");
+	var g = svg.select("g");
+	//g.transition().duration(2000).attr("transform", "scale(2,1)");
+	this._areapath.transition().duration(2000)
+		.attr("transform", "scale(2,1)");
+	//this._areapath.transition().duration(2000).style("width", w)
+
+	var t = svg.transition().duration(2000);
+	t.select(".x.axis").call(this._x_axis);
+        //this._xaxisgraphicnode.transition().duration(2000).attr("x", this._width()+10)
+*/
+		/*
+        if (this._data) {
+            this._applyData();
+        }*/
+        
+    },
+
+    /*
+     * Change height of the Control
+     */
+    height: function(w) {
+        if(!w) return this.options.height;
+        console.log(w);
+    },
+
+    /*
     /*
      * Fromatting funciton using the given decimals and seperator
      */
@@ -391,13 +479,15 @@ L.Control.Elevation = L.Control.extend({
     _appendXaxis: function(x) {
         var opts = this.options;
 
+	this._x_axis = d3.svg.axis()
+		.scale(this._x)
+		.ticks(this.options.xTicks)
+		.orient("bottom");
+
         if (opts.imperial) {
             x.attr("class", "x axis")
                 .attr("transform", "translate(0," + this._height() + ")")
-                .call(d3.svg.axis()
-                    .scale(this._x)
-                    .ticks(this.options.xTicks)
-                    .orient("bottom"))
+                .call(this._x_axis)
                 .append("text")
                 .attr("x", this._width() + 10)
                 .attr("y", 15)
@@ -406,10 +496,7 @@ L.Control.Elevation = L.Control.extend({
         } else {
             x.attr("class", "x axis")
                 .attr("transform", "translate(0," + this._height() + ")")
-                .call(d3.svg.axis()
-                    .scale(this._x)
-                    .ticks(this.options.xTicks)
-                    .orient("bottom"))
+                .call(this._x_axis)
                 .append("text")
                 .attr("x", this._width() + 20)
                 .attr("y", 15)
