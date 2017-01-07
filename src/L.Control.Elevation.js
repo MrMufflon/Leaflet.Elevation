@@ -27,6 +27,7 @@ L.Control.Elevation = L.Control.extend({
             iconCssClass: "elevation-toggle-icon",
             title: "Elevation"
         },
+	widthAnimTime: 2000,
         imperial: false
     },
     __mileFactor: 0.621371,
@@ -343,83 +344,58 @@ L.Control.Elevation = L.Control.extend({
     },
 
     /*
-     * Change width of the Control
+     * Change width of the Control.
+     * This does not affect margins, but the function
+     * can be easy extended to affect those. 
      */
-    /*
-     * <div.container>
-     *   <svg> (width,height)
-     *     <g>
-     *       <g>
-     *         <path.area>
-     *       <g>
-     *       <rect>
-     *       <g.x.axis>
-     *       <g.y.axis>
-     *       <g.marker>
-     *         <line />
-     *         <text />
-     *         <text />
-     *       </g.marker>
-     *     </g>
-     *   </svg>
-     * <div>
-     */
-    width: function(w) {
+    width: function(w ) {
         if(!w) return this.options.width;
         console.log(w);
 
-	var old_width = this._width();
-
         var opts = this.options;
+	/* 
+	 * In order to find a proper scaling
+	 * we need to do this trick
+	 */
+	var old_width = this._width();
 	opts.width = w;
-        opts.xTicks = opts.xTicks || Math.round(this._width() / 75);
-        opts.yTicks = opts.yTicks || Math.round(this._height() / 30);
+	var width = this._width();
+	var scale = width / old_width;
 
-	//var ease = d3.easeBackInOut(2000,3.0);
+	/* recalculate the new X axis */
+        opts.xTicks = Math.round(width / 75);
+	this._x.range([0,width]);
 
-	var new_width = this._width();
-	var scale = new_width / old_width;
-	this._x.range([0,this._width()]);
 	var cont = d3.select(this._container);
-	cont.transition().duration(2000).style("width", w)
 	var svg = cont.select("svg");
-	svg.transition().duration(2000).style("width", w);
 	var g_cont = this.g_cont = svg.select("g");
-	g_cont.select("g").transition().duration(2000).attr("transform", "scale("+scale.toString()+",1)");
-	this._background.transition().duration(2000).style("width", this._width());
-        this._xaxisgraphicnode.transition().duration(2000).call(this._x_axis);
 
-	setTimeout(this._finishWidth.bind(this), 2100);
-
-	//g_cont.select("g").transition().duration(2000).attrTween("transform", function(d, i, a) {
-   	// return d3.interpolateString(a, 'scale('+ scale.toString() +',1)');
-	//});
-	
+	cont.transition().duration(opts.widthAnimTime).style("width", w)
+	svg.transition().duration(opts.widthAnimTime).style("width", w);
+	g_cont.select("g").transition().duration(opts.widthAnimTime).attr("transform", "scale("+scale.toString()+",1)");
+	this._background.transition().duration(opts.widthAnimTime).style("width", this._width());
 	/*
-	this._x.range([0,this._width()]);
-	var cont = d3.select(this._container);
-	cont.transition().duration(2000).style("width", w)
-	var svg = cont.select("svg");
-	svg.transition().duration(2000).style("width", w);
-	//svg.attr("transform", "scale(1,1)").transition().duration(2000)
-	//	.attr("transform", "scale(2,1)");
-	var g = svg.select("g");
-	//g.transition().duration(2000).attr("transform", "scale(2,1)");
-	this._areapath.transition().duration(2000)
-		.attr("transform", "scale(2,1)");
-	//this._areapath.transition().duration(2000).style("width", w)
+	 * I am not satisfied about the X axis animation.
+	 * Are you able to make it better? Feel free to adjust!
+	 */
+        this._xaxisgraphicnode.transition().duration(opts.widthAnimTime).call(this._x_axis);
 
-	var t = svg.transition().duration(2000);
-	t.select(".x.axis").call(this._x_axis);
-        //this._xaxisgraphicnode.transition().duration(2000).attr("x", this._width()+10)
-*/
-		/*
-        if (this._data) {
-            this._applyData();
-        }*/
-        
+	/*
+	 * I feel better, when I know,
+	 * that the <path> is not scaled, but it's drawn properly.
+	 * That's why, after the scaling the whole window,
+	 * we reapply the data, and rescale back. This way,
+	 * when user want's to change width one more time,
+	 * we have (1,1) scale
+	 */
+	setTimeout(this._finishWidth.bind(this), opts.widthAnimTime+100);
     },
 
+    /*
+     * Reapply the data (forcing the <path> to be redrawn for new width)
+     * and reset the scaling. On my web-browser this is only wisible on
+     * X axis. The <path> redrawing is invincible.
+     */
     _finishWidth: function(g) {
         if (this._data) {
             this._applyData();
