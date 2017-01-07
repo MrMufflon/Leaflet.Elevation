@@ -384,10 +384,12 @@ L.Control.Elevation = L.Control.extend({
 	cont.transition().duration(2000).style("width", w)
 	var svg = cont.select("svg");
 	svg.transition().duration(2000).style("width", w);
-	var g_cont = svg.select("g");
+	var g_cont = this.g_cont = svg.select("g");
 	g_cont.select("g").transition().duration(2000).attr("transform", "scale("+scale.toString()+",1)");
 	this._background.transition().duration(2000).style("width", this._width());
         this._xaxisgraphicnode.transition().duration(2000).call(this._x_axis);
+
+	setTimeout(this._finishWidth.bind(this), 2100);
 
 	//g_cont.select("g").transition().duration(2000).attrTween("transform", function(d, i, a) {
    	// return d3.interpolateString(a, 'scale('+ scale.toString() +',1)');
@@ -417,6 +419,14 @@ L.Control.Elevation = L.Control.extend({
         }*/
         
     },
+
+    _finishWidth: function(g) {
+        if (this._data) {
+            this._applyData();
+	    this.g_cont.select("g").attr("transform", "scale(1,1)");
+        }
+    },
+
 
     /*
      * Change height of the Control
