@@ -370,8 +370,8 @@ L.Control.Elevation = L.Control.extend({
 	var svg = cont.select("svg");
 	var g_cont = this.g_cont = svg.select("g");
 
-	cont.transition().duration(opts.widthAnimTime).style("width", w)
-	svg.transition().duration(opts.widthAnimTime).style("width", w);
+	cont.transition().duration(opts.widthAnimTime).attr("width", w)
+	svg.transition().duration(opts.widthAnimTime).attr("width", w);
 	g_cont.select("g").transition().duration(opts.widthAnimTime).attr("transform", "scale("+scale.toString()+",1)");
 	this._background.transition().duration(opts.widthAnimTime).style("width", this._width());
 	/*
