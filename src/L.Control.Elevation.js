@@ -27,7 +27,7 @@ L.Control.Elevation = L.Control.extend({
             iconCssClass: "elevation-toggle-icon",
             title: "Elevation"
         },
-	widthAnimTime: 2000,
+        widthAnimTime: 2000,
         imperial: false
     },
     __mileFactor: 0.621371,
@@ -353,42 +353,42 @@ L.Control.Elevation = L.Control.extend({
         console.log(w);
 
         var opts = this.options;
-	/* 
-	 * In order to find a proper scaling
-	 * we need to do this trick
-	 */
-	var old_width = this._width();
-	opts.width = w;
-	var width = this._width();
-	var scale = width / old_width;
+        /* 
+         * In order to find a proper scaling
+         * we need to do this trick
+         */
+        var old_width = this._width();
+        opts.width = w;
+        var width = this._width();
+        var scale = width / old_width;
 
-	/* recalculate the new X axis */
+        /* recalculate the new X axis */
         opts.xTicks = Math.round(width / 75);
-	this._x.range([0,width]);
+        this._x.range([0,width]);
 
-	var cont = d3.select(this._container);
-	var svg = cont.select("svg");
-	var g_cont = this.g_cont = svg.select("g");
+        var cont = d3.select(this._container);
+        var svg = cont.select("svg");
+        var g_cont = this.g_cont = svg.select("g");
 
-	cont.transition().duration(opts.widthAnimTime).attr("width", w)
-	svg.transition().duration(opts.widthAnimTime).attr("width", w);
-	g_cont.select("g").transition().duration(opts.widthAnimTime).attr("transform", "scale("+scale.toString()+",1)");
-	this._background.transition().duration(opts.widthAnimTime).style("width", this._width());
-	/*
-	 * I am not satisfied about the X axis animation.
-	 * Are you able to make it better? Feel free to adjust!
-	 */
+        cont.transition().duration(opts.widthAnimTime).attr("width", w)
+        svg.transition().duration(opts.widthAnimTime).attr("width", w);
+        g_cont.select("g").transition().duration(opts.widthAnimTime).attr("transform", "scale("+scale.toString()+",1)");
+        this._background.transition().duration(opts.widthAnimTime).style("width", this._width());
+        /*
+         * I am not satisfied about the X axis animation.
+         * Are you able to make it better? Feel free to adjust!
+         */
         this._xaxisgraphicnode.transition().duration(opts.widthAnimTime).call(this._x_axis);
 
-	/*
-	 * I feel better, when I know,
-	 * that the <path> is not scaled, but it's drawn properly.
-	 * That's why, after the scaling the whole window,
-	 * we reapply the data, and rescale back. This way,
-	 * when user want's to change width one more time,
-	 * we have (1,1) scale
-	 */
-	setTimeout(this._finishWidth.bind(this), opts.widthAnimTime+100);
+        /*
+         * I feel better, when I know,
+         * that the <path> is not scaled, but it's drawn properly.
+         * That's why, after the scaling the whole window,
+         * we reapply the data, and rescale back. This way,
+         * when user want's to change width one more time,
+         * we have (1,1) scale
+         */
+        setTimeout(this._finishWidth.bind(this), opts.widthAnimTime+100);
     },
 
     /*
@@ -399,7 +399,7 @@ L.Control.Elevation = L.Control.extend({
     _finishWidth: function(g) {
         if (this._data) {
             this._applyData();
-	    this.g_cont.select("g").attr("transform", "scale(1,1)");
+            this.g_cont.select("g").attr("transform", "scale(1,1)");
         }
     },
 
@@ -465,10 +465,10 @@ L.Control.Elevation = L.Control.extend({
     _appendXaxis: function(x) {
         var opts = this.options;
 
-	this._x_axis = d3.svg.axis()
-		.scale(this._x)
-		.ticks(this.options.xTicks)
-		.orient("bottom");
+        this._x_axis = d3.svg.axis()
+            .scale(this._x)
+            .ticks(this.options.xTicks)
+            .orient("bottom");
 
         if (opts.imperial) {
             x.attr("class", "x axis")
