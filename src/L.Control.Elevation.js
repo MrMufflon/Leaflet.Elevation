@@ -27,7 +27,10 @@ L.Control.Elevation = L.Control.extend({
             iconCssClass: "elevation-toggle-icon",
             title: "Elevation"
         },
-        widthAnimTime: 2000,
+        animTimes: {
+        	width: 1000,
+        	height: 1000
+        },
         imperial: false
     },
     __mileFactor: 0.621371,
@@ -349,72 +352,58 @@ L.Control.Elevation = L.Control.extend({
      * This does not affect margins, but the function
      * can be easy extended to affect those. 
      */
-    width: function(w ) {
+    width: function(w, opts) {
         if(!w) return this.options.width;
-        console.log(w);
 
-        var opts = this.options;
-        /* 
-         * In order to find a proper scaling
-         * we need to do this trick
-         */
-        var old_width = this._width();
-        opts.width = w;
-        var width = this._width();
-        var scale = width / old_width;
+        opts = opts || {time: this.options.animTimes.width, ease: "linear"};
+        opts.time = opts.time || this.options.animTimes.width;
+        opts.ease = opts.ease || "linear";
+
+        this.options.width = w;
+		var w_no_margin = this._width();
 
         /* recalculate the new X axis */
-        opts.xTicks = Math.round(width / 75);
-        this._x.range([0,width]);
+        this.options.xTicks = Math.round(this._width() / 75);
+        this._x.range([0,w_no_margin]);
 
         var cont = d3.select(this._container);
 
-		var t = cont.transition().duration(opts.widthAnimTime).ease("linear");
-		t.select(".background").attr("width", w);
-		t.select(".elevationbg").attr("width", w);
-		t.select(".area").attr("d", this._area);
-		t.select(".x.axis").call(this._x_axis);
-
-        //cont.transition().duration(opts.widthAnimTime).ease("elastic").attr("width", w)
-        //svg.transition().duration(opts.widthAnimTime).ease("elastic").attr("width", w);
-        //g_cont.select("g").transition().duration(opts.widthAnimTime).ease("elastic").attr("transform", "scale("+scale.toString()+",1)");
-        //this._background.transition().duration(opts.widthAnimTime).ease("elastic").style("width", this._width());
-		//var t = path.transition().duration(opts.widthAnimTime).ease("elastic").attr("d", this._area);
-        /*
-         * I am not satisfied about the X axis animation.
-         * Are you able to make it better? Feel free to adjust!
-         */
-        //this._xaxisgraphicnode.transition().duration(opts.widthAnimTime).ease("elastic").call(this._x_axis);
-
-        /*
-         * I feel better, when I know,
-         * that the <path> is not scaled, but it's drawn properly.
-         * That's why, after the scaling the whole window,
-         * we reapply the data, and rescale back. This way,
-         * when user want's to change width one more time,
-         * we have (1,1) scale
-         */
-        setTimeout(this._finishWidth.bind(this), opts.widthAnimTime+1000);
+        var t = cont.transition().duration(opts.time).ease(opts.ease);
+        t.select(".elevation.leaflet-control").attr("width", w);
+        t.select(".background").attr("width", w);
+        t.select(".elevationbg").attr("width", w_no_margin);
+        t.select(".area").attr("d", this._area);
+        t.select(".x.axis").call(this._x_axis);
+        this._updateAxis();
     },
-
-    /*
-     * Reapply the data (forcing the <path> to be redrawn for new width)
-     * and reset the scaling. On my web-browser this is only wisible on
-     * X axis. The <path> redrawing is invincible.
-     */
-    _finishWidth: function(g) {
-        if (this._data) {
-            this._applyData();
-        }
-    },
-
 
     /*
      * Change height of the Control
      */
-    height: function(w) {
-        if(!w) return this.options.height;
-        console.log(w);
+    height: function(h, opts) {
+        if(!h) return this.options.height;
+
+		console.log("veeeeeery buggy :)");
+
+        opts = opts || {time: this.options.animTimes.height, ease: "linear"};
+        opts.time = opts.time || this.options.animTimes.height;
+        opts.ease = opts.ease || "linear";
+
+        this.options.height = h;
+		var h_no_margin = this._height();
+
+        /* recalculate the new X axis */
+        this.options.yTicks = Math.round(h_no_margin / 30);
+        this._y.range([0,h_no_margin]);
+
+        var cont = d3.select(this._container);
+
+        var t = cont.transition().duration(opts.time).ease(opts.ease);
+        t.select(".background").attr("height", h);
+        t.select(".elevationbg").attr("height", h_no_margin);
+        t.select(".area").attr("d", this._area);
+        t.select(".y.axis").call(this._y_axis);
+        this._updateAxis();
     },
 
     /*
@@ -442,12 +431,14 @@ L.Control.Elevation = L.Control.extend({
     _appendYaxis: function(y) {
         var opts = this.options;
 
+		this._y_axis = d3.svg.axis()
+            .scale(this._y)
+            .ticks(this.options.yTicks)
+            .orient("left")
+
         if (opts.imperial) {
             y.attr("class", "y axis")
-                .call(d3.svg.axis()
-                    .scale(this._y)
-                    .ticks(this.options.yTicks)
-                    .orient("left"))
+                .call(this._y_axis)
                 .append("text")
                 .attr("x", -37)
                 .attr("y", 3)
@@ -455,10 +446,7 @@ L.Control.Elevation = L.Control.extend({
                 .text("ft");
         } else {
             y.attr("class", "y axis")
-                .call(d3.svg.axis()
-                    .scale(this._y)
-                    .ticks(this.options.yTicks)
-                    .orient("left"))
+                .call(this._y_axis)
                 .append("text")
                 .attr("x", -45)
                 .attr("y", 3)
