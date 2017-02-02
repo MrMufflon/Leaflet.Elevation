@@ -93,6 +93,7 @@ L.Control.Elevation = L.Control.extend({
             .attr("class", "area");
 
         var background = this._background = g.append("rect")
+            .attr("class", "elevationbg")
             .attr("width", this._width())
             .attr("height", this._height())
             .style("fill", "none")
@@ -367,18 +368,23 @@ L.Control.Elevation = L.Control.extend({
         this._x.range([0,width]);
 
         var cont = d3.select(this._container);
-        var svg = cont.select("svg");
-        var g_cont = this.g_cont = svg.select("g");
 
-        cont.transition().duration(opts.widthAnimTime).attr("width", w)
-        svg.transition().duration(opts.widthAnimTime).attr("width", w);
-        g_cont.select("g").transition().duration(opts.widthAnimTime).attr("transform", "scale("+scale.toString()+",1)");
-        this._background.transition().duration(opts.widthAnimTime).style("width", this._width());
+		var t = cont.transition().duration(opts.widthAnimTime).ease("linear");
+		t.select(".background").attr("width", w);
+		t.select(".elevationbg").attr("width", w);
+		t.select(".area").attr("d", this._area);
+		t.select(".x.axis").call(this._x_axis);
+
+        //cont.transition().duration(opts.widthAnimTime).ease("elastic").attr("width", w)
+        //svg.transition().duration(opts.widthAnimTime).ease("elastic").attr("width", w);
+        //g_cont.select("g").transition().duration(opts.widthAnimTime).ease("elastic").attr("transform", "scale("+scale.toString()+",1)");
+        //this._background.transition().duration(opts.widthAnimTime).ease("elastic").style("width", this._width());
+		//var t = path.transition().duration(opts.widthAnimTime).ease("elastic").attr("d", this._area);
         /*
          * I am not satisfied about the X axis animation.
          * Are you able to make it better? Feel free to adjust!
          */
-        this._xaxisgraphicnode.transition().duration(opts.widthAnimTime).call(this._x_axis);
+        //this._xaxisgraphicnode.transition().duration(opts.widthAnimTime).ease("elastic").call(this._x_axis);
 
         /*
          * I feel better, when I know,
@@ -388,7 +394,7 @@ L.Control.Elevation = L.Control.extend({
          * when user want's to change width one more time,
          * we have (1,1) scale
          */
-        setTimeout(this._finishWidth.bind(this), opts.widthAnimTime+100);
+        setTimeout(this._finishWidth.bind(this), opts.widthAnimTime+1000);
     },
 
     /*
@@ -399,7 +405,6 @@ L.Control.Elevation = L.Control.extend({
     _finishWidth: function(g) {
         if (this._data) {
             this._applyData();
-            this.g_cont.select("g").attr("transform", "scale(1,1)");
         }
     },
 
