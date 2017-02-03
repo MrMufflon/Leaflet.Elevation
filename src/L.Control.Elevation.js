@@ -360,21 +360,21 @@ L.Control.Elevation = L.Control.extend({
         opts.ease = opts.ease || "linear";
 
         this.options.width = w;
-		var w_no_margin = this._width();
+        var w_no_margin = this._width();
 
         /* recalculate the new X axis */
         this.options.xTicks = Math.round(this._width() / 75);
+		this._x_axis.ticks(this.options.xTicks);
         this._x.range([0,w_no_margin]);
 
         var cont = d3.select(this._container);
 
-        var t = cont.transition().duration(opts.time).ease(opts.ease);
+        var t = cont.transition().duration(opts.time).ease(opts.ease).each("end", this._updateAxis.bind(this));
         t.select(".elevation.leaflet-control").attr("width", w);
         t.select(".background").attr("width", w);
         t.select(".elevationbg").attr("width", w_no_margin);
         t.select(".area").attr("d", this._area);
         t.select(".x.axis").call(this._x_axis);
-        this._updateAxis();
     },
 
     /*
@@ -383,18 +383,18 @@ L.Control.Elevation = L.Control.extend({
     height: function(h, opts) {
         if(!h) return this.options.height;
 
-		console.log("veeeeeery buggy :)");
-
         opts = opts || {time: this.options.animTimes.height, ease: "linear"};
         opts.time = opts.time || this.options.animTimes.height;
         opts.ease = opts.ease || "linear";
 
         this.options.height = h;
-		var h_no_margin = this._height();
+        var h_no_margin = this._height();
 
         /* recalculate the new X axis */
         this.options.yTicks = Math.round(h_no_margin / 30);
-        this._y.range([0,h_no_margin]);
+		this._y_axis.ticks(this.options.yTicks);
+        this._y.range([h_no_margin,0]);
+        this._area.y0(h_no_margin);
 
         var cont = d3.select(this._container);
 
@@ -402,8 +402,8 @@ L.Control.Elevation = L.Control.extend({
         t.select(".background").attr("height", h);
         t.select(".elevationbg").attr("height", h_no_margin);
         t.select(".area").attr("d", this._area);
+        t.select(".x.axis").attr("transform", "translate(0," + h_no_margin + ")")
         t.select(".y.axis").call(this._y_axis);
-        this._updateAxis();
     },
 
     /*
@@ -431,7 +431,7 @@ L.Control.Elevation = L.Control.extend({
     _appendYaxis: function(y) {
         var opts = this.options;
 
-		this._y_axis = d3.svg.axis()
+        this._y_axis = d3.svg.axis()
             .scale(this._y)
             .ticks(this.options.yTicks)
             .orient("left")
