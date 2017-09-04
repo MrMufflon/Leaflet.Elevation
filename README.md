@@ -47,7 +47,7 @@ var el = L.control.elevation({
 		left: 50
 	},
 	useHeightIndicator: true, //if false a marker is drawn at map position
-	interpolation: "linear", //see https://github.com/mbostock/d3/wiki/SVG-Shapes#wiki-area_interpolate
+	interpolation: d3.curveLinear, //see https://github.com/d3/d3-shape/blob/master/README.md#area_curve
 	hoverNumber: {
 		decimalsX: 3, //decimals on distance (always in km)
 		decimalsY: 0, //deciamls on hehttps://www.npmjs.com/package/leaflet.coordinatesight (always in m)
