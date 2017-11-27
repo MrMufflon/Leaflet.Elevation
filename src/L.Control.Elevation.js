@@ -27,7 +27,8 @@ L.Control.Elevation = L.Control.extend({
             iconCssClass: "elevation-toggle-icon",
             title: "Elevation"
         },
-        imperial: false
+        imperial: false,
+        mapid: ""
     },
     __mileFactor: 0.621371,
     __footFactor: 3.28084,
@@ -41,6 +42,7 @@ L.Control.Elevation = L.Control.extend({
 
         var opts = this.options;
         var margin = opts.margins;
+        this._mapid = opts.mapid;
         opts.xTicks = opts.xTicks || Math.round(this._width() / 75);
         opts.yTicks = opts.yTicks || Math.round(this._height() / 30);
         opts.hoverNumber.formatter = opts.hoverNumber.formatter || this._formatter;
@@ -482,7 +484,7 @@ L.Control.Elevation = L.Control.extend({
 
             if (!this._mouseHeightFocus) {
 
-                var heightG = d3.select(".leaflet-overlay-pane svg")
+                var heightG = d3.select(this._mapid + " .leaflet-overlay-pane svg")
                     .append("g");
                 this._mouseHeightFocus = heightG.append('svg:line')
                     .attr("class", opts.theme + " height-focus line")
