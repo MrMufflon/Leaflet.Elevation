@@ -27,7 +27,8 @@ L.Control.Elevation = L.Control.extend({
             iconCssClass: "elevation-toggle-icon",
             title: "Elevation"
         },
-        imperial: false
+        imperial: false,
+        mapid: ""
     },
     __mileFactor: 0.621371,
     __footFactor: 3.28084,
@@ -41,6 +42,7 @@ L.Control.Elevation = L.Control.extend({
 
         var opts = this.options;
         var margin = opts.margins;
+        this._mapid = opts.mapid;
         opts.xTicks = opts.xTicks || Math.round(this._width() / 75);
         opts.yTicks = opts.yTicks || Math.round(this._height() / 30);
         opts.hoverNumber.formatter = opts.hoverNumber.formatter || this._formatter;
@@ -98,7 +100,7 @@ L.Control.Elevation = L.Control.extend({
             .style("stroke", "none")
             .style("pointer-events", "all");
 
-        if (L.Browser.touch) {
+        if (L.Browser.mobile) {
 
             background.on("touchmove.drag", this._dragHandler.bind(this)).
             on("touchstart.drag", this._dragStartHandler.bind(this)).
@@ -287,7 +289,7 @@ L.Control.Elevation = L.Control.extend({
         //Makes this work on IE10 Touch devices by stopping it from firing a mouseout event when the touch is released
         container.setAttribute('aria-haspopup', true);
 
-        if (!L.Browser.touch) {
+        if (!L.Browser.mobile) {
             L.DomEvent
                 .disableClickPropagation(container);
             //.disableScrollPropagation(container);
@@ -308,7 +310,7 @@ L.Control.Elevation = L.Control.extend({
             link.href = '#';
             link.title = this.options.controlButton.title;
 
-            if (L.Browser.touch) {
+            if (L.Browser.mobile) {
                 L.DomEvent
                     .on(link, 'click', L.DomEvent.stop)
                     .on(link, 'click', this._expand, this);
@@ -482,7 +484,7 @@ L.Control.Elevation = L.Control.extend({
 
             if (!this._mouseHeightFocus) {
 
-                var heightG = d3.select(".leaflet-overlay-pane svg")
+                var heightG = d3.select(this._mapid + " .leaflet-overlay-pane svg")
                     .append("g");
                 this._mouseHeightFocus = heightG.append('svg:line')
                     .attr("class", opts.theme + " height-focus line")
