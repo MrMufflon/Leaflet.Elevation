@@ -482,7 +482,8 @@ L.Control.Elevation = L.Control.extend({
 
             if (!this._mouseHeightFocus) {
 
-                var heightG = d3.select(".leaflet-overlay-pane svg")
+                var heightG = d3.select(this._map.getContainer())
+                    .select(".leaflet-overlay-pane svg")
                     .append("g");
                 this._mouseHeightFocus = heightG.append('svg:line')
                     .attr("class", opts.theme + " height-focus line")
