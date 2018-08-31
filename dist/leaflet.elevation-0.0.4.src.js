@@ -154,7 +154,7 @@ L.Control.Elevation = L.Control.extend({
     },
 
     /*
-     * Draws the currently dragged rectabgle over the chart.
+     * Draws the currently dragged rectangle over the chart.
      */
     _drawDragRectangle: function() {
 
@@ -186,7 +186,7 @@ L.Control.Elevation = L.Control.extend({
     },
 
     /*
-     * Removes the drag rectangle and zoms back to the total extent of the data.
+     * Removes the drag rectangle and zooms back to the total extent of the data.
      */
     _resetDrag: function() {
 
@@ -205,7 +205,7 @@ L.Control.Elevation = L.Control.extend({
     },
 
     /*
-     * Handles end of dragg operations. Zooms the map to the selected items extent.
+     * Handles end of drag operations. Zooms the map to the selected items extent.
      */
     _dragEndHandler: function() {
 
@@ -266,7 +266,9 @@ L.Control.Elevation = L.Control.extend({
         return result;
     },
 
-    /** Make the map fit the route section between given indexes. */
+    /*
+     * Make the map fit the route section between given indexes.
+     */
     _fitSection: function(index1, index2) {
 
         var start = Math.min(index1, index2),
@@ -340,7 +342,7 @@ L.Control.Elevation = L.Control.extend({
     },
 
     /*
-     * Fromatting funciton using the given decimals and seperator
+     * Formatting function using the given decimals and seperator
      */
     _formatter: function(num, dec, sep) {
         var res;
@@ -436,7 +438,7 @@ L.Control.Elevation = L.Control.extend({
     },
 
     /*
-     * Hides the position-/heigth indication marker drawn onto the map
+     * Hides the position-/height indication marker drawn onto the map
      */
     _hidePositionMarker: function() {
 
@@ -456,7 +458,7 @@ L.Control.Elevation = L.Control.extend({
     },
 
     /*
-     * Handles the moueseover the chart and displays distance and altitude level
+     * Handles the moueseover on the chart and displays distance and altitude level
      */
     _mousemoveHandler: function(d, i, ctx) {
         if (!this._data || this._data.length === 0) {
@@ -476,8 +478,8 @@ L.Control.Elevation = L.Control.extend({
 
         var layerpoint = this._map.latLngToLayerPoint(ll);
 
-        //if we use a height indicator we create one with SVG
-        //otherwise we show a marker
+        // If we use a height indicator we create one with SVG
+        // Otherwise we show a marker
         if (opts.useHeightIndicator) {
 
             if (!this._mouseHeightFocus) {
@@ -762,9 +764,9 @@ L.Control.Elevation = L.Control.extend({
             return;
         }
 
-        // workaround for 'Error: Problem parsing d=""' in Webkit when empty data
+        // Workaround for 'Error: Problem parsing d=""' in Webkit when empty data
         // https://groups.google.com/d/msg/d3-js/7rFxpXKXFhI/HzIO_NPeDuMJ
-        //this._areapath.datum(this._data).attr("d", this._area);
+        // this._areapath.datum(this._data).attr("d", this._area);
         this._areapath.attr("d", "M0 0");
 
         this._x.domain([0, 1]);
