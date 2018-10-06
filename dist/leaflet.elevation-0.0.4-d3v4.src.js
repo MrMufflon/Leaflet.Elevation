@@ -105,15 +105,14 @@ L.Control.Elevation = L.Control.extend({
             on("touchstart.focus", this._mousemoveHandler.bind(this));
             L.DomEvent.on(this._container, 'touchend', this._dragEndHandler, this);
 
-        } else {
-
-            background.on("mousemove.focus", this._mousemoveHandler.bind(this)).
-            on("mouseout.focus", this._mouseoutHandler.bind(this)).
-            on("mousedown.drag", this._dragStartHandler.bind(this)).
-            on("mousemove.drag", this._dragHandler.bind(this));
-            L.DomEvent.on(this._container, 'mouseup', this._dragEndHandler, this);
-
         }
+
+        background.on("mousemove.focus", this._mousemoveHandler.bind(this)).
+        on("mouseout.focus", this._mouseoutHandler.bind(this)).
+        on("mousedown.drag", this._dragStartHandler.bind(this)).
+        on("mousemove.drag", this._dragHandler.bind(this));
+        L.DomEvent.on(this._container, 'mouseup', this._dragEndHandler, this);
+        
 
         this._xaxisgraphicnode = g.append("g");
         this._yaxisgraphicnode = g.append("g");
@@ -287,11 +286,11 @@ L.Control.Elevation = L.Control.extend({
         //Makes this work on IE10 Touch devices by stopping it from firing a mouseout event when the touch is released
         container.setAttribute('aria-haspopup', true);
 
-        if (!L.Browser.touch) {
-            L.DomEvent
-                .disableClickPropagation(container);
+        L.DomEvent
+            .disableClickPropagation(container);
             //.disableScrollPropagation(container);
-        } else {
+            
+        if (L.Browser.touch) {
             L.DomEvent.on(container, 'click', L.DomEvent.stopPropagation);
         }
 
@@ -312,9 +311,9 @@ L.Control.Elevation = L.Control.extend({
                 L.DomEvent
                     .on(link, 'click', L.DomEvent.stop)
                     .on(link, 'click', this._expand, this);
-            } else {
-                L.DomEvent.on(link, 'focus', this._expand, this);
             }
+            
+            L.DomEvent.on(link, 'focus', this._expand, this);
 
             this._map.on('click', this._collapse, this);
             // TODO keyboard accessibility
