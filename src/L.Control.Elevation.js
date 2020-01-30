@@ -27,7 +27,8 @@ L.Control.Elevation = L.Control.extend({
             iconCssClass: "elevation-toggle-icon",
             title: "Elevation"
         },
-        imperial: false
+        imperial: false,
+	elevationZoom: true
     },
     __mileFactor: 0.621371,
     __footFactor: 3.28084,
@@ -70,7 +71,7 @@ L.Control.Elevation = L.Control.extend({
 
         var cont = d3.select(container);
         cont.attr("width", opts.width);
-        var svg = cont.append("svg");
+        var svg = this._svg = cont.append("svg");
         svg.attr("width", opts.width)
             .attr("class", "background")
             .attr("height", opts.height)
@@ -97,6 +98,10 @@ L.Control.Elevation = L.Control.extend({
             .style("fill", "none")
             .style("stroke", "none")
             .style("pointer-events", "all");
+
+	g.append("clipPath").attr("id", "clip")
+		.append("rect").attr("width", this._width())
+		.attr("height", this._height());
 
         if (L.Browser.touch) {
 
@@ -197,10 +202,9 @@ L.Control.Elevation = L.Control.extend({
             this._dragRectangle = null;
 
             this._hidePositionMarker();
-
-            this._map.fitBounds(this._fullExtent);
-
         }
+        this._map.fitBounds(this._fullExtent);
+        this._zoom(0, this._data.length-1);
 
     },
 
@@ -220,11 +224,22 @@ L.Control.Elevation = L.Control.extend({
 
         var item1 = this._findItemForX(this._dragStartCoords[0]),
             item2 = this._findItemForX(this._dragCurrentCoords[0]);
+	if (item1 == item2) {
+		this._resetDrag();
+		return;
+	}
 
         this._fitSection(item1, item2);
+        this._zoom(item1, item2);
 
         this._dragStartCoords = null;
         this._gotDragged = false;
+        if (this._dragRectangleG) {
+
+            this._dragRectangleG.remove();
+            this._dragRectangleG = null;
+            this._dragRectangle = null;
+	}
 
     },
 
@@ -340,6 +355,34 @@ L.Control.Elevation = L.Control.extend({
     },
 
     /*
+     * Zooms (in or out) the elevation graph
+     * for the given x item indexes
+     * (with awesome svg path animation)
+     *
+     * @param i - this._data index of the beggining of zoom
+     * @param j - this._data index of the end of zoom
+     */
+    _zoom: function(i,j) {
+        if (!this.options.elevationZoom) {
+            return;
+        }
+        if (i > j) {
+            var tmp = j;
+	    j = i;
+	    i = tmp;
+	}
+        var xdomain = d3.extent(this._data.slice(i,j), function(d) {
+            return d.dist;
+        });
+	this._x.domain(xdomain);
+	var t = this._svg.transition().duration(750);
+        t.select(".x.axis").call(this._x_axis);
+        t.select(".area").attr("d", this._area);
+    },
+
+		
+
+    /*
      * Fromatting funciton using the given decimals and seperator
      */
     _formatter: function(num, dec, sep) {
@@ -360,6 +403,9 @@ L.Control.Elevation = L.Control.extend({
         return res;
     },
 
+    /*
+     * @param y - <g> container
+     */
     _appendYaxis: function(y) {
         var opts = this.options;
 
@@ -388,16 +434,20 @@ L.Control.Elevation = L.Control.extend({
         }
     },
 
+    /*
+     * @param x - <g> container
+     */
     _appendXaxis: function(x) {
         var opts = this.options;
+	this._x_axis = d3.svg.axis()
+                    .scale(this._x)
+                    .ticks(this.options.xTicks)
+                    .orient("bottom");
 
         if (opts.imperial) {
             x.attr("class", "x axis")
                 .attr("transform", "translate(0," + this._height() + ")")
-                .call(d3.svg.axis()
-                    .scale(this._x)
-                    .ticks(this.options.xTicks)
-                    .orient("bottom"))
+                .call(this._x_axis)
                 .append("text")
                 .attr("x", this._width() + 10)
                 .attr("y", 15)
@@ -560,6 +610,7 @@ L.Control.Elevation = L.Control.extend({
                 dist = dist + Math.round(newdist / 1000 * 100000) / 100000;
                 ele = ele < coords[i][2] ? coords[i][2] : ele;
                 data.push({
+                    index: i,
                     dist: dist,
                     altitude: opts.imperial ? coords[i][2] * this.__footFactor : coords[i][2],
                     x: coords[i][0],
@@ -590,6 +641,7 @@ L.Control.Elevation = L.Control.extend({
                 dist = dist + Math.round(newdist / 1000 * 100000) / 100000;
                 ele = ele < s.meta.ele ? s.meta.ele : ele;
                 data.push({
+					index: i,
                     dist: dist,
                     altitude: opts.imperial ? s.meta.ele * this.__footFactor : s.meta.ele,
                     x: s.lng,
@@ -737,7 +789,8 @@ L.Control.Elevation = L.Control.extend({
         this._x.domain(xdomain);
         this._y.domain(ydomain);
         this._areapath.datum(this._data)
-            .attr("d", this._area);
+            .attr("d", this._area)
+            .attr("clip-path", "url(#clip)");
         this._updateAxis();
 
         this._fullExtent = this._calculateFullExtent(this._data);
