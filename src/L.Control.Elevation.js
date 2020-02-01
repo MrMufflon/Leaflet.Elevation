@@ -666,6 +666,7 @@ L.Control.Elevation = L.Control.extend({
         }
         if (layer) {
             layer.on("mousemove", this._handleLayerMouseOver.bind(this));
+            layer.on("mouseout", this._hidePositionMarker.bind(this));
         }
     },
 
