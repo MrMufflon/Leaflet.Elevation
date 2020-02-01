@@ -12,6 +12,8 @@ L.Control.Elevation = L.Control.extend({
         },
         useHeightIndicator: true,
         interpolation: d3.curveLinear,
+        defined: undefined,
+        notDefinedLabel: '–',
         hoverNumber: {
             decimalsX: 3,
             decimalsY: 0,
@@ -44,6 +46,7 @@ L.Control.Elevation = L.Control.extend({
         opts.xTicks = opts.xTicks || Math.round(this._width() / 75);
         opts.yTicks = opts.yTicks || Math.round(this._height() / 30);
         opts.hoverNumber.formatter = opts.hoverNumber.formatter || this._formatter;
+        opts.defined = opts.defined || this._defined;
 
         var x = this._x = d3.scaleLinear()
             .range([0, this._width()]);
@@ -53,10 +56,9 @@ L.Control.Elevation = L.Control.extend({
 
         var area = this._area = d3.area()
             .curve(opts.interpolation)
+            .defined(opts.defined)
             .x(function(d) {
-                var xDiagCoord = x(d.dist);
-                d.xDiagCoord = xDiagCoord;
-                return xDiagCoord;
+                return x(d.dist);
             })
             .y0(this._height())
             .y1(function(d) {
@@ -360,6 +362,14 @@ L.Control.Elevation = L.Control.extend({
         return res;
     },
 
+    /*
+     * d3 defined accessor implementation to skip missing elevation values, to be passed to `area.defined()`
+     */
+    _defined: function(d) {
+        // falsy result is skipped - not just returning d.altitude, because 0 is also falsy
+        return d.altitude !== undefined && d.altitude !== null; 
+    },
+
     _appendYaxis: function(y) {
         var opts = this.options;
 
@@ -465,7 +475,8 @@ L.Control.Elevation = L.Control.extend({
             alt = item.altitude,
             dist = item.dist,
             ll = item.latlng,
-            numY = opts.hoverNumber.formatter(alt, opts.hoverNumber.decimalsY),
+            defined = opts.defined(item),
+            numY = defined ? opts.hoverNumber.formatter(alt, opts.hoverNumber.decimalsY) : opts.notDefinedLabel,
             numX = opts.hoverNumber.formatter(dist, opts.hoverNumber.decimalsX);
 
         this._showDiagramIndicator(item, coords[0]);
@@ -501,7 +512,7 @@ L.Control.Elevation = L.Control.extend({
 
             }
 
-            var normalizedAlt = this._height() / this._maxElevation * alt;
+            var normalizedAlt = defined ? this._height() / this._maxElevation * alt : 0;
             var normalizedY = layerpoint.y - normalizedAlt;
             this._mouseHeightFocus.attr("x1", layerpoint.x)
                 .attr("x2", layerpoint.x)
@@ -557,7 +568,7 @@ L.Control.Elevation = L.Control.extend({
                 ele = ele < coords[i][2] ? coords[i][2] : ele;
                 data.push({
                     dist: dist,
-                    altitude: opts.imperial ? coords[i][2] * this.__footFactor : coords[i][2],
+                    altitude: opts.imperial && coords[i][2] ? coords[i][2] * this.__footFactor : coords[i][2],
                     x: coords[i][0],
                     y: coords[i][1],
                     latlng: s
@@ -587,7 +598,7 @@ L.Control.Elevation = L.Control.extend({
                 ele = ele < s.meta.ele ? s.meta.ele : ele;
                 data.push({
                     dist: dist,
-                    altitude: opts.imperial ? s.meta.ele * this.__footFactor : s.meta.ele,
+                    altitude: opts.imperial && s.meta.ele ? s.meta.ele * this.__footFactor : s.meta.ele,
                     x: s.lng,
                     y: s.lat,
                     latlng: s
@@ -679,6 +690,10 @@ L.Control.Elevation = L.Control.extend({
         var latlng = evt.latlng;
         var item = this._findItemForLatLng(latlng);
         if (item) {
+            // cache, not in area.x() because skipped for missing (not `defined`) altitudes
+            if (item.xDiagCoord === undefined) {
+                item.xDiagCoord = this._x(item.dist);
+            }
             var x = item.xDiagCoord;
             this._showDiagramIndicator(item, x);
         }
@@ -696,7 +711,8 @@ L.Control.Elevation = L.Control.extend({
         var alt = item.altitude,
             dist = item.dist,
             ll = item.latlng,
-            numY = opts.hoverNumber.formatter(alt, opts.hoverNumber.decimalsY),
+            defined = opts.defined(item),
+            numY = defined ? opts.hoverNumber.formatter(alt, opts.hoverNumber.decimalsY) : opts.notDefinedLabel,
             numX = opts.hoverNumber.formatter(dist, opts.hoverNumber.decimalsX);
 
         if (opts.imperial) {

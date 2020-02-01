@@ -32,7 +32,7 @@ Supported data:
 `` bower install leaflet.elevation ``
 
 ### How to use
-Altitude information for each point is necessary in the given data.
+
 ```javascript
 //all used options are the default values
 var el = L.control.elevation({
@@ -48,6 +48,8 @@ var el = L.control.elevation({
 	},
 	useHeightIndicator: true, //if false a marker is drawn at map position
 	interpolation: d3.curveLinear, //see https://github.com/d3/d3-shape/blob/master/README.md#area_curve
+	defined: undefined, // option to override our d3 `area.defined` accessor that skips missing altitudes
+	notDefinedLabel: '–', // altitude label text to show when missing (defined accessor returns false)
 	hoverNumber: {
 		decimalsX: 3, //decimals on distance (always in km)
 		decimalsY: 0, //deciamls on hehttps://www.npmjs.com/package/leaflet.coordinatesight (always in m)
